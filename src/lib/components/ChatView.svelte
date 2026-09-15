@@ -45,12 +45,7 @@
     if (pinned) scrollToBottom()
   })
 
-  async function createSession(): Promise<void> {
-    await sessions.create()
-  }
-
-  function share(): void {
-    if (!sessionID) return
+  function share(): void {    if (!sessionID) return
     void sessions.share(sessionID).then((url) => {
       if (url) {
         void navigator.clipboard.writeText(url)
@@ -63,14 +58,13 @@
 <section class="chat">
   {#if !sessionID}
     <div class="welcome">
-      <div class="welcome-card panel">
-        <Icon name="sparkles" size={26} />
-        <h1>opencode web</h1>
-        <p>Start a new session to talk to your local opencode server.</p>
-        <button class="btn primary" onclick={createSession}>
-          <Icon name="plus" size={14} />
-          New session
-        </button>
+      <div class="hero">
+        <div class="hero-mark"><Icon name="sparkles" size={20} /></div>
+        <h1>What should we build?</h1>
+        <p>Ask your local opencode server. Use / for commands and @ for files.</p>
+        <div class="hero-composer">
+          <Composer sessionID="" />
+        </div>
       </div>
     </div>
   {:else}
@@ -141,32 +135,47 @@
     place-items: center;
     padding: 24px;
   }
-  .welcome-card {
+  .hero {
+    width: 100%;
+    max-width: 720px;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 12px;
-    padding: 40px 48px;
-    text-align: center;
-    color: var(--accent);
   }
-  .welcome-card h1 {
-    margin: 0;
-    font-size: 1.5rem;
+  .hero-mark {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: rgb(255 255 255 / 0.06);
+    border: 1px solid var(--border);
     color: var(--text);
+    margin-bottom: 4px;
   }
-  .welcome-card p {
+  .hero h1 {
     margin: 0;
+    font-size: 1.4rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--text-strong);
+  }
+  .hero p {
+    margin: 0 0 6px;
     color: var(--text-muted);
-    font-size: 0.9rem;
-    max-width: 34ch;
+    font-size: 0.88rem;
+    max-width: 46ch;
+    text-align: center;
+  }
+  .hero-composer {
+    width: 100%;
   }
   .chat-head {
     display: flex;
     align-items: center;
     gap: 10px;
     padding: 12px 18px;
-    border-bottom: 1px solid var(--border);
   }
   .title {
     font-weight: 600;
@@ -192,18 +201,18 @@
     scroll-behavior: auto;
   }
   .thread {
-    max-width: 860px;
+    max-width: 720px;
     margin: 0 auto;
-    padding: 20px 20px 30px;
+    padding: 16px 20px 26px;
     display: flex;
     flex-direction: column;
     gap: 14px;
   }
   .composer-wrap {
-    padding: 0 18px 16px;
+    padding: 0 18px 18px;
   }
   .composer-wrap :global(.composer) {
-    max-width: 860px;
+    max-width: 720px;
     margin: 0 auto;
   }
   .jump {

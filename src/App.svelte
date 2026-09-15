@@ -50,27 +50,30 @@
 </script>
 
 <div class="app-bg"></div>
+<div class="grain"></div>
 
 <div class="shell">
-  <TopBar />
-
-  <div class="main">
-    {#if ui.sidebarOpen}
-      <div class="col sidebar-col panel">
-        <SessionsSidebar />
-      </div>
-    {/if}
-
-    <div class="col chat-col panel">
-      <ChatView />
+  {#if ui.sidebarOpen}
+    <div class="sidebar-col">
+      <SessionsSidebar />
     </div>
+  {/if}
 
-    {#if ui.panelOpen}
-      <div class="col right-col panel">
-        <RightPanel />
+  <main class="main">
+    <TopBar />
+
+    <div class="content">
+      <div class="chat-col">
+        <ChatView />
       </div>
-    {/if}
-  </div>
+
+      {#if ui.panelOpen}
+        <div class="right-col panel">
+          <RightPanel />
+        </div>
+      {/if}
+    </div>
+  </main>
 </div>
 
 {#if ui.settingsOpen}
@@ -82,42 +85,47 @@
 <style>
   .shell {
     display: flex;
-    flex-direction: column;
     height: 100vh;
     height: 100dvh;
+  }
+  .sidebar-col {
+    width: 260px;
+    flex-shrink: 0;
+    height: 100%;
     min-height: 0;
+    display: flex;
+    background: #000000;
+    border-right: 1px solid var(--border);
   }
   .main {
     flex: 1;
+    min-width: 0;
     min-height: 0;
     display: flex;
-    gap: 12px;
-    padding: 12px;
-  }
-  .col {
-    min-height: 0;
-    overflow: hidden;
-    display: flex;
-  }
-  .sidebar-col {
-    width: 288px;
-    flex-shrink: 0;
     flex-direction: column;
+  }
+  .content {
+    flex: 1;
+    min-height: 0;
+    display: flex;
   }
   .chat-col {
     flex: 1;
     min-width: 0;
-    flex-direction: column;
+    min-height: 0;
+    display: flex;
   }
   .right-col {
-    width: 400px;
+    width: 360px;
     flex-shrink: 0;
-    flex-direction: column;
+    margin: 10px 10px 10px 0;
+    min-height: 0;
+    overflow: hidden;
   }
 
   @media (max-width: 1180px) {
     .right-col {
-      width: 340px;
+      width: 320px;
     }
   }
 
@@ -130,10 +138,6 @@
   @media (max-width: 760px) {
     .sidebar-col {
       display: none;
-    }
-    .main {
-      padding: 8px;
-      gap: 8px;
     }
   }
 </style>

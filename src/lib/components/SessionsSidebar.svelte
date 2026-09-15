@@ -35,16 +35,19 @@
 </script>
 
 <aside class="sidebar">
-  <div class="top">
-    <button class="btn primary new" onclick={() => sessions.create()}>
-      <Icon name="plus" size={15} />
-      New session
-    </button>
-  </div>
+  <button class="nav-row new" onclick={() => sessions.create()}>
+    <Icon name="plus" size={15} />
+    <span>New session</span>
+  </button>
 
   <div class="search">
     <Icon name="search" size={14} />
     <input placeholder="Search sessions" bind:value={query} />
+  </div>
+
+  <div class="section">
+    <span class="section-label">Sessions</span>
+    <span class="section-count">{filtered.length}</span>
   </div>
 
   <div class="list">
@@ -88,7 +91,7 @@
               title="Rename"
               onclick={() => startRename(session.id, session.title)}
             >
-              <Icon name="settings" size={13} stroke={1.5} />
+              <Icon name="pencil" size={13} />
             </button>
             <button class="ghost mini danger" title="Delete" onclick={() => remove(session.id)}>
               <Icon name="trash" size={13} />
@@ -100,16 +103,20 @@
   </div>
 
   <div class="foot">
-    <button class="status" onclick={() => connection.refresh()}>
-      <span class="dot {connection.status === 'online' ? 'idle' : connection.status === 'connecting' ? 'retry' : 'busy'}"></span>
+    <span class="avatar" class:offline={connection.status !== 'online'}>oc</span>
+    <button class="status" onclick={() => connection.refresh()} title="Reconnect">
       <span class="status-text">
         {connection.status === 'online'
-          ? `connected${connection.version ? ` · v${connection.version}` : ''}`
+          ? 'opencode'
           : connection.status === 'connecting'
             ? 'connecting…'
             : 'offline'}
       </span>
-      <Icon name="refresh" size={13} />
+      <span class="status-sub">
+        {connection.status === 'online' && connection.version
+          ? `v${connection.version}`
+          : 'tap to retry'}
+      </span>
     </button>
     <button class="ghost mini" title="Settings" onclick={() => (ui.settingsOpen = true)}>
       <Icon name="settings" size={15} />
@@ -123,21 +130,49 @@
     flex-direction: column;
     min-height: 0;
     width: 100%;
-    padding: 14px 12px;
-    gap: 12px;
+    padding: 10px;
+    gap: 8px;
+    color: var(--text);
+  }
+  .nav-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 34px;
+    padding: 0 10px;
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-align: left;
+    transition: background 0.16s ease, border-color 0.16s ease;
   }
   .new {
-    width: 100%;
+    background: rgb(255 255 255 / 0.06);
+    border: 1px solid var(--border);
+  }
+  .new:hover {
+    background: rgb(255 255 255 / 0.1);
+    border-color: var(--border-strong);
   }
   .search {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 7px 10px;
-    border: 1px solid var(--border);
+    height: 32px;
+    padding: 0 9px;
+    border: 1px solid transparent;
     border-radius: var(--radius-sm);
-    background: var(--input-bg);
+    background: transparent;
     color: var(--text-faint);
+    transition: background 0.16s ease, border-color 0.16s ease;
+  }
+  .search:hover {
+    background: var(--hover);
+  }
+  .search:focus-within {
+    border-color: var(--border-strong);
+    background: var(--hover);
   }
   .search input {
     flex: 1;
@@ -145,17 +180,33 @@
     background: none;
     border: none;
     outline: none;
-    font-size: 0.84rem;
+    font-size: 0.82rem;
+  }
+  .section {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 10px 2px;
+  }
+  .section-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+  .section-count {
+    font-size: 0.7rem;
+    color: var(--text-faint);
+    font-variant-numeric: tabular-nums;
   }
   .list {
     flex: 1;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 3px;
+    gap: 1px;
     min-height: 0;
-    margin: 0 -4px;
-    padding: 0 4px;
   }
   .item {
     display: flex;
@@ -163,13 +214,13 @@
     gap: 2px;
     border-radius: var(--radius-sm);
     border: 1px solid transparent;
+    transition: background 0.16s ease;
   }
   .item:hover {
     background: var(--hover);
   }
   .item.active {
-    background: color-mix(in srgb, var(--accent) 15%, transparent);
-    border-color: color-mix(in srgb, var(--accent) 30%, transparent);
+    background: rgb(255 255 255 / 0.07);
   }
   .item-main {
     display: flex;
@@ -177,19 +228,19 @@
     gap: 9px;
     flex: 1;
     min-width: 0;
-    padding: 9px 8px;
+    padding: 8px;
     text-align: left;
   }
   .dot {
-    width: 7px;
-    height: 7px;
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
     flex-shrink: 0;
     background: var(--text-faint);
   }
   .dot.busy {
     background: var(--accent);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
     animation: pulse 1.4s ease-in-out infinite;
   }
   .dot.retry {
@@ -197,7 +248,7 @@
   }
   .dot.idle {
     background: var(--success);
-    opacity: 0.5;
+    opacity: 0.55;
   }
   .text {
     display: flex;
@@ -206,7 +257,8 @@
     gap: 1px;
   }
   .name {
-    font-size: 0.84rem;
+    font-size: 0.83rem;
+    color: var(--text);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -214,6 +266,7 @@
   .sub {
     font-size: 0.7rem;
     color: var(--text-faint);
+    font-variant-numeric: tabular-nums;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -224,8 +277,7 @@
     gap: 3px;
     font-size: 0.68rem;
     color: var(--warning);
-    background: color-mix(in srgb, var(--warning) 14%, transparent);
-    border: 1px solid color-mix(in srgb, var(--warning) 32%, transparent);
+    background: var(--warning-bg);
     border-radius: 999px;
     padding: 1px 6px;
   }
@@ -249,36 +301,56 @@
   .rename {
     width: 100%;
     margin: 4px;
-    padding: 7px 9px;
+    padding: 6px 9px;
     background: var(--input-bg);
-    border: 1px solid color-mix(in srgb, var(--accent) 50%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
     border-radius: var(--radius-sm);
     outline: none;
-    font-size: 0.84rem;
+    font-size: 0.83rem;
   }
   .foot {
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding-top: 10px;
+    gap: 9px;
+    padding: 9px 4px 2px;
     border-top: 1px solid var(--border);
+  }
+  .avatar {
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    background: linear-gradient(150deg, #6d5bd0, #b4457a);
+    color: #ffffff;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+  .avatar.offline {
+    background: var(--surface-3);
+    color: var(--text-faint);
   }
   .status {
     display: flex;
-    align-items: center;
-    gap: 7px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
     flex: 1;
     min-width: 0;
-    padding: 6px 6px;
-    border-radius: var(--radius-sm);
-    color: var(--text-faint);
-    font-size: 0.76rem;
-  }
-  .status:hover {
-    background: var(--hover);
-    color: var(--text-muted);
+    text-align: left;
   }
   .status-text {
+    font-size: 0.82rem;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .status-sub {
+    font-size: 0.68rem;
+    color: var(--text-faint);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

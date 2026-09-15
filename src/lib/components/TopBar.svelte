@@ -56,22 +56,24 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 10px 14px;
-    border-bottom: 1px solid var(--border);
+    padding: 10px 12px;
+    flex-shrink: 0;
   }
   .brand {
     display: flex;
     align-items: center;
-    gap: 7px;
+    gap: 8px;
+    padding-left: 2px;
   }
   .mark {
     display: grid;
     place-items: center;
-    width: 26px;
-    height: 26px;
-    border-radius: 8px;
-    background: linear-gradient(140deg, var(--accent), color-mix(in srgb, var(--accent) 40%, var(--bg-3)));
-    color: #0a0d1a;
+    width: 24px;
+    height: 24px;
+    border-radius: 7px;
+    background: rgb(255 255 255 / 0.08);
+    border: 1px solid var(--border);
+    color: var(--text);
   }
   .name {
     font-weight: 650;

@@ -96,15 +96,19 @@
   .trigger {
     display: inline-flex;
     align-items: center;
-    gap: 7px;
-    height: 32px;
-    padding: 0 10px;
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--border);
-    background: var(--surface-2);
+    gap: 6px;
+    height: 28px;
+    padding: 0 8px;
+    border-radius: 999px;
+    border: 1px solid transparent;
     color: var(--text-muted);
     font-size: 0.8rem;
-    max-width: 340px;
+    max-width: 320px;
+    transition: background 0.16s ease, color 0.16s ease;
+  }
+  .trigger:hover {
+    background: var(--hover);
+    color: var(--text);
   }
   .trigger:hover {
     background: var(--hover-strong);
@@ -118,11 +122,11 @@
     font-weight: 500;
   }
   .agent {
-    font-size: 0.72rem;
+    font-size: 0.7rem;
     padding: 1px 7px;
     border-radius: 999px;
-    background: color-mix(in srgb, var(--accent) 18%, transparent);
-    color: var(--accent);
+    background: rgb(255 255 255 / 0.06);
+    color: var(--text-muted);
     white-space: nowrap;
   }
   .popover {

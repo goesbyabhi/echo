@@ -22,19 +22,19 @@ export type Toast = {
 
 export type PanelTab = 'files' | 'changes' | 'todos' | 'status' | 'permissions'
 
-const STORAGE_KEY = 'opencode-ui:theme:v2'
+const STORAGE_KEY = 'opencode-ui:theme:v3'
 const LAYOUT_KEY = 'opencode-ui:layout'
 
 export const defaultTheme: ThemeSettings = {
-  kind: 'solid',
-  color1: '#f7f6f3',
-  color2: '#fbfbfa',
-  color3: '#efeee9',
-  imageUrl: '',
+  kind: 'image',
+  color1: '#0a0a0b',
+  color2: '#101012',
+  color3: '#17171b',
+  imageUrl: '/wallpaper.svg',
   blur: 0,
-  dim: 0,
-  accent: '#1f6c9f',
-  panelOpacity: 1,
+  dim: 0.55,
+  accent: '#3b82f6',
+  panelOpacity: 0.72,
 }
 
 function load(): ThemeSettings {
