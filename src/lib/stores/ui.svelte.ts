@@ -37,6 +37,7 @@ export type DiffView = {
 
 const STORAGE_KEY = 'opencode-ui:theme:v7'
 const LAYOUT_KEY = 'opencode-ui:layout'
+const THEME_VERSION = 8
 
 export const defaultTheme: ThemeSettings = {
   kind: 'image',
@@ -49,11 +50,11 @@ export const defaultTheme: ThemeSettings = {
   accent: '#3b82f6',
   panelOpacity: 0.72,
   fade: 1,
-  vignette: 0.55,
-  grain: 0.14,
-  dither: 0.34,
-  scanline: 0.14,
-  bloom: 0.5,
+  vignette: 0.45,
+  grain: 0.1,
+  dither: 0.2,
+  scanline: 0.1,
+  bloom: 0.4,
   drift: true,
 }
 
@@ -62,7 +63,18 @@ function load(): ThemeSettings {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (!raw) return { ...defaultTheme }
-    return { ...defaultTheme, ...(JSON.parse(raw) as Partial<ThemeSettings>) }
+    const parsed = JSON.parse(raw) as Partial<ThemeSettings> & { v?: number }
+    const merged: ThemeSettings = { ...defaultTheme, ...parsed }
+    if ((parsed.v ?? 0) < THEME_VERSION) {
+      merged.fade = defaultTheme.fade
+      merged.vignette = defaultTheme.vignette
+      merged.grain = defaultTheme.grain
+      merged.dither = defaultTheme.dither
+      merged.scanline = defaultTheme.scanline
+      merged.bloom = defaultTheme.bloom
+      merged.drift = defaultTheme.drift
+    }
+    return merged
   } catch {
     return { ...defaultTheme }
   }
@@ -129,7 +141,7 @@ class Ui {
     this.applyTheme()
     if (typeof localStorage !== 'undefined') {
       try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(this.theme))
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...this.theme, v: THEME_VERSION }))
       } catch {
         /* ignore */
       }
