@@ -1,4 +1,5 @@
 <script lang="ts">
+  import type { Session } from '@opencode-ai/sdk/client'
   import { connection } from '../stores/connection.svelte'
   import { permissions } from '../stores/permissions.svelte'
   import { sessions } from '../stores/sessions.svelte'
@@ -6,15 +7,45 @@
   import { relativeTime } from '../format'
   import Icon from './Icon.svelte'
 
+  type Row = {
+    session: Session
+    depth: number
+    hasChildren: boolean
+    expanded: boolean
+  }
+
   let query = $state('')
   let editingId = $state('')
   let editValue = $state('')
+  let collapsed = $state<Record<string, boolean>>({})
 
-  const filtered = $derived(
-    sessions.roots.filter((session) =>
-      session.title.toLowerCase().includes(query.trim().toLowerCase()),
-    ),
-  )
+  const rows = $derived.by<Row[]>(() => {
+    const q = query.trim().toLowerCase()
+    const out: Row[] = []
+    for (const root of sessions.roots) {
+      const kids = sessions.children(root.id)
+      const rootMatch = !q || root.title.toLowerCase().includes(q)
+      const matchedKids = kids.filter((kid) => !q || kid.title.toLowerCase().includes(q))
+      const expanded = !collapsed[root.id]
+      if (rootMatch) {
+        out.push({ session: root, depth: 0, hasChildren: kids.length > 0, expanded })
+        if (expanded) {
+          for (const kid of q ? matchedKids : kids) {
+            out.push({ session: kid, depth: 1, hasChildren: false, expanded: false })
+          }
+        }
+      } else {
+        for (const kid of matchedKids) {
+          out.push({ session: kid, depth: 1, hasChildren: false, expanded: false })
+        }
+      }
+    }
+    return out
+  })
+
+  function toggle(id: string): void {
+    collapsed = { ...collapsed, [id]: !collapsed[id] }
+  }
 
   function startRename(id: string, title: string): void {
     editingId = id
@@ -52,21 +83,25 @@
 
   <div class="section">
     <span class="section-label">Sessions</span>
-    <span class="section-count">{filtered.length}</span>
+    <span class="section-count">{rows.length}</span>
   </div>
 
   <div class="list">
-    {#if filtered.length === 0}
+    {#if rows.length === 0}
       <div class="empty">
         {sessions.loading ? 'Loading…' : query ? 'No matches' : 'No sessions yet'}
       </div>
     {/if}
 
-    {#each filtered as session (session.id)}
-      {@const statusType = sessions.status(session.id)?.type ?? 'idle'}
-      {@const count = permissions.forSession(session.id).length}
-      <div class="item" class:active={sessions.current === session.id}>
-        {#if editingId === session.id}
+    {#each rows as row (row.session.id)}
+      {@const statusType = sessions.status(row.session.id)?.type ?? 'idle'}
+      {@const count = permissions.forSession(row.session.id).length}
+      <div
+        class="item"
+        class:active={sessions.current === row.session.id}
+        class:child={row.depth > 0}
+      >
+        {#if editingId === row.session.id}
           <input
             class="rename"
             bind:value={editValue}
@@ -77,13 +112,28 @@
             }}
           />
         {:else}
-          <button class="item-main" onclick={() => sessions.select(session.id)}>
-            <span class="dot {statusType}"></span>
+          {#if row.hasChildren}
+            <button
+              class="twist"
+              title={row.expanded ? 'Collapse' : 'Expand'}
+              onclick={() => toggle(row.session.id)}
+            >
+              <Icon name={row.expanded ? 'chevron-down' : 'chevron-right'} size={12} />
+            </button>
+          {:else}
+            <span class="twist"></span>
+          {/if}
+          <button class="item-main" onclick={() => sessions.select(row.session.id)}>
+            {#if row.depth === 0}
+              <span class="dot {statusType}"></span>
+            {:else}
+              <span class="branch"><Icon name="git-branch" size={12} /></span>
+            {/if}
             <span class="text">
-              <span class="name">{session.title}</span>
+              <span class="name">{row.session.title}</span>
               <span class="sub">
-                {relativeTime(session.time.updated)}
-                {#if session.summary}· {session.summary.files} files{/if}
+                {relativeTime(row.session.time.updated)}
+                {#if row.session.summary}· {row.session.summary.files} files{/if}
               </span>
             </span>
             {#if count > 0}
@@ -94,11 +144,11 @@
             <button
               class="ghost mini"
               title="Rename"
-              onclick={() => startRename(session.id, session.title)}
+              onclick={() => startRename(row.session.id, row.session.title)}
             >
               <Icon name="pencil" size={13} />
             </button>
-            <button class="ghost mini danger" title="Delete" onclick={() => remove(session.id)}>
+            <button class="ghost mini danger" title="Delete" onclick={() => remove(row.session.id)}>
               <Icon name="trash" size={13} />
             </button>
           </div>
@@ -230,6 +280,28 @@
   }
   .item.active {
     background: rgb(255 255 255 / 0.07);
+  }
+  .item.child {
+    margin-left: 16px;
+    border-left: 1px solid var(--border);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  }
+  .twist {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 26px;
+    flex-shrink: 0;
+    color: var(--text-faint);
+  }
+  button.twist:hover {
+    color: var(--text);
+  }
+  .branch {
+    display: inline-flex;
+    color: var(--text-faint);
+    flex-shrink: 0;
   }
   .item-main {
     display: flex;

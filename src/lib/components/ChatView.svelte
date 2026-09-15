@@ -68,10 +68,23 @@
       </div>
     </div>
   {:else}
+    {@const parent = sessions.currentParent}
     <header class="chat-head">
       <div class="head-inner">
+        {#if parent}
+          <button
+            class="ghost"
+            title={`Back to ${parent.title}`}
+            onclick={() => sessions.select(parent.id)}
+          >
+            <Icon name="arrow-left" size={15} />
+          </button>
+        {/if}
         <div class="title">{sessions.currentSession?.title ?? 'Untitled session'}</div>
         <div class="chips">
+          {#if parent}
+            <span class="chip" title={parent.title}>sub-agent</span>
+          {/if}
           {#if busy}
             <span class="chip warn"><span class="pulse-dot busy"></span> working</span>
           {:else}

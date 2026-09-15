@@ -22,6 +22,18 @@ class Sessions {
     return this.list.filter((session) => !session.parentID)
   }
 
+  children(parentID: string): Session[] {
+    return this.list
+      .filter((session) => session.parentID === parentID)
+      .sort((a, b) => a.time.created - b.time.created)
+  }
+
+  get currentParent(): Session | undefined {
+    const session = this.currentSession
+    if (!session?.parentID) return undefined
+    return this.list.find((item) => item.id === session.parentID)
+  }
+
   get currentSession(): Session | undefined {
     return this.list.find((session) => session.id === this.current)
   }
