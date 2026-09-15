@@ -220,6 +220,14 @@ a {
   opacity: calc(var(--fx-bloom, 0) * 0.35);
 }
 
+/* In chat the wallpaper is dimmed to near-black, so the texture layers would
+   read as grey static. They belong to the artwork, not the reading surface. */
+[data-view='chat'] .fx-grain,
+[data-view='chat'] .fx-dither,
+[data-view='chat'] .fx-scanlines {
+  opacity: 0;
+}
+
 /* Chat is a reading surface: freeze the artwork so scrolling stays cheap */
 [data-view='chat'][data-drift='on'][data-bg='image'] .app-bg,
 [data-view='chat'][data-drift='on'][data-bg='mesh'] .app-bg,
