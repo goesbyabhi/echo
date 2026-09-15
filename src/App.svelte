@@ -18,6 +18,10 @@
   })
 
   $effect(() => {
+    ui.persistLayout()
+  })
+
+  $effect(() => {
     const client = connection.client
     const controller = new AbortController()
     let cancelled = false

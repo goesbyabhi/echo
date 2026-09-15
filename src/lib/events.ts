@@ -77,18 +77,41 @@ export function handleEvent(event: Event): void {
   }
 }
 
+function sleep(ms: number, signal: AbortSignal): Promise<void> {
+  return new Promise((resolve) => {
+    if (signal.aborted) return resolve()
+    const timer = setTimeout(() => {
+      signal.removeEventListener('abort', onAbort)
+      resolve()
+    }, ms)
+    function onAbort(): void {
+      clearTimeout(timer)
+      resolve()
+    }
+    signal.addEventListener('abort', onAbort, { once: true })
+  })
+}
+
 export async function startEventStream(client: OpencodeClient, signal: AbortSignal): Promise<void> {
-  try {
-    const events = await client.event.subscribe({ signal })
-    for await (const event of events.stream) {
-      if (signal.aborted) break
-      handleEvent(event)
+  let attempt = 0
+  while (!signal.aborted) {
+    try {
+      const events = await client.event.subscribe({ signal })
+      attempt = 0
+      for await (const event of events.stream) {
+        if (signal.aborted) break
+        handleEvent(event)
+      }
+    } catch (error) {
+      if (signal.aborted) return
+      const message = error instanceof Error ? error.message : String(error)
+      if (attempt === 0 && !/abort/i.test(message)) {
+        ui.toast(message, 'warning', 'Event stream disconnected — reconnecting')
+      }
     }
-  } catch (error) {
     if (signal.aborted) return
-    const message = error instanceof Error ? error.message : String(error)
-    if (!/abort/i.test(message)) {
-      ui.toast(message, 'warning', 'Event stream disconnected')
-    }
+    attempt += 1
+    const delay = Math.min(1000 * 2 ** Math.min(attempt, 4), 15000)
+    await sleep(delay, signal)
   }
 }

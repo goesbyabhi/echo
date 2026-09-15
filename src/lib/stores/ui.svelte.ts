@@ -23,6 +23,7 @@ export type Toast = {
 export type PanelTab = 'files' | 'changes' | 'todos' | 'status' | 'permissions'
 
 const STORAGE_KEY = 'opencode-ui:theme'
+const LAYOUT_KEY = 'opencode-ui:layout'
 
 export const defaultTheme: ThemeSettings = {
   kind: 'aurora',
@@ -47,15 +48,54 @@ function load(): ThemeSettings {
   }
 }
 
+type LayoutSettings = {
+  panelTab: PanelTab
+  panelOpen: boolean
+  sidebarOpen: boolean
+}
+
+const defaultLayout: LayoutSettings = {
+  panelTab: 'files',
+  panelOpen: true,
+  sidebarOpen: true,
+}
+
+function loadLayout(): LayoutSettings {
+  if (typeof localStorage === 'undefined') return { ...defaultLayout }
+  try {
+    const raw = localStorage.getItem(LAYOUT_KEY)
+    if (!raw) return { ...defaultLayout }
+    return { ...defaultLayout, ...(JSON.parse(raw) as Partial<LayoutSettings>) }
+  } catch {
+    return { ...defaultLayout }
+  }
+}
+
 let toastId = 0
 
 class Ui {
   theme = $state<ThemeSettings>(load())
   toasts = $state<Toast[]>([])
-  panelTab = $state<PanelTab>('files')
-  panelOpen = $state(true)
-  sidebarOpen = $state(true)
+  panelTab = $state<PanelTab>(loadLayout().panelTab)
+  panelOpen = $state(loadLayout().panelOpen)
+  sidebarOpen = $state(loadLayout().sidebarOpen)
   settingsOpen = $state(false)
+
+  persistLayout(): void {
+    if (typeof localStorage === 'undefined') return
+    try {
+      localStorage.setItem(
+        LAYOUT_KEY,
+        JSON.stringify({
+          panelTab: this.panelTab,
+          panelOpen: this.panelOpen,
+          sidebarOpen: this.sidebarOpen,
+        }),
+      )
+    } catch {
+      /* ignore */
+    }
+  }
 
   updateTheme(patch: Partial<ThemeSettings>): void {
     this.theme = { ...this.theme, ...patch }
