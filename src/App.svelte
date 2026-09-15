@@ -73,7 +73,7 @@
       </div>
 
       {#if ui.panelOpen}
-        <div class="right-col panel">
+        <div class="right-col panel" class:wide={ui.panelTab === 'diff'}>
           <RightPanel />
         </div>
       {/if}
@@ -126,17 +126,28 @@
     margin: 10px 10px 10px 0;
     min-height: 0;
     overflow: hidden;
+    transition: width 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .right-col.wide {
+    width: min(720px, 52vw);
   }
 
   @media (max-width: 1180px) {
     .right-col {
       width: 320px;
     }
+    .right-col.wide {
+      width: min(560px, 58vw);
+    }
   }
 
   @media (max-width: 980px) {
     .right-col {
       display: none;
+    }
+    .right-col.wide {
+      display: block;
+      width: min(520px, 72vw);
     }
   }
 

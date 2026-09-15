@@ -61,7 +61,10 @@
     overflow: hidden;
     background: var(--code-bg);
     font-family: var(--mono);
-    font-size: 0.78rem;
+    font-size: 0.76rem;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
   }
   .diff-stats {
     display: flex;
@@ -84,7 +87,9 @@
     font-family: var(--font);
   }
   .diff-body {
-    max-height: 460px;
+    flex: 1;
+    min-height: 0;
+    max-height: var(--diff-max, 460px);
     overflow: auto;
   }
   .hunk-header {
@@ -97,10 +102,10 @@
   }
   .line {
     display: grid;
-    grid-template-columns: 44px 44px 16px 1fr;
+    grid-template-columns: 40px 40px 14px 1fr;
     gap: 0;
     white-space: pre;
-    line-height: 1.5;
+    line-height: 1.55;
   }
   .line.add {
     background: color-mix(in srgb, var(--success) 12%, transparent);
