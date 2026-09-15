@@ -114,7 +114,7 @@
     padding: 10px;
     border: 1px solid color-mix(in srgb, var(--warning) 30%, var(--border));
     border-radius: var(--radius);
-    background: color-mix(in srgb, var(--warning) 8%, rgb(255 255 255 / 0.02));
+    background: color-mix(in srgb, var(--warning) 8%, var(--surface-2));
   }
   .card-head {
     display: flex;
@@ -141,7 +141,7 @@
     font-family: var(--mono);
     font-size: 0.74rem;
     color: var(--text-muted);
-    background: rgb(0 0 0 / 0.3);
+    background: var(--input-bg);
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
     padding: 5px 8px;
@@ -157,7 +157,7 @@
   .meta {
     margin: 0;
     padding: 8px;
-    background: rgb(6 8 18 / 0.6);
+    background: var(--code-bg);
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
     font-family: var(--mono);

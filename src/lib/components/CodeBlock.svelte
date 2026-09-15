@@ -47,7 +47,7 @@
   pre {
     margin: 0;
     padding: 12px 14px;
-    background: rgb(6 8 18 / 0.62);
+    background: var(--code-bg);
     border: 1px solid var(--border);
     border-radius: var(--radius);
     overflow: auto;

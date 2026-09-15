@@ -127,7 +127,7 @@
     min-height: 44px;
     max-height: 280px;
     resize: none;
-    background: rgb(0 0 0 / 0.28);
+    background: var(--input-bg);
     border: 1px solid var(--border);
     border-radius: var(--radius);
     padding: 11px 12px;
@@ -170,7 +170,7 @@
     color: var(--text-muted);
   }
   .slash-row:hover {
-    background: rgb(255 255 255 / 0.07);
+    background: var(--hover-strong);
     color: var(--text);
   }
   .slash-row .name {

@@ -78,7 +78,7 @@
   .reasoning {
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    background: rgb(255 255 255 / 0.02);
+    background: var(--surface-2);
     overflow: hidden;
   }
   .reasoning-head {
@@ -91,7 +91,7 @@
     color: var(--text-muted);
   }
   .reasoning-head:hover {
-    background: rgb(255 255 255 / 0.05);
+    background: var(--hover);
   }
   .reasoning-body {
     padding: 0 12px 10px;
@@ -105,7 +105,7 @@
     padding: 8px 10px;
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    background: rgb(255 255 255 / 0.03);
+    background: var(--surface-2);
     font-size: 0.82rem;
   }
   .file-part .name {
@@ -138,7 +138,7 @@
     border: 1px solid var(--border);
     border-radius: var(--radius);
     padding: 10px;
-    background: rgb(255 255 255 / 0.03);
+    background: var(--surface-2);
   }
   .subtask-head {
     display: flex;

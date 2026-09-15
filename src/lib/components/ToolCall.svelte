@@ -128,7 +128,7 @@
   .tool {
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    background: rgb(255 255 255 / 0.028);
+    background: var(--surface-2);
     overflow: hidden;
   }
   .tool.errored {
@@ -145,7 +145,7 @@
     color: var(--text-muted);
   }
   .tool-head:hover {
-    background: rgb(255 255 255 / 0.05);
+    background: var(--hover);
   }
   .status {
     display: inline-flex;
@@ -204,7 +204,7 @@
   .code {
     margin: 0;
     padding: 8px 10px;
-    background: rgb(6 8 18 / 0.6);
+    background: var(--code-bg);
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
     font-family: var(--mono);

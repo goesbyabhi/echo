@@ -136,7 +136,7 @@
     padding: 7px 10px;
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
-    background: rgb(0 0 0 / 0.22);
+    background: var(--input-bg);
     color: var(--text-faint);
   }
   .search input {
@@ -165,7 +165,7 @@
     border: 1px solid transparent;
   }
   .item:hover {
-    background: rgb(255 255 255 / 0.05);
+    background: var(--hover);
   }
   .item.active {
     background: color-mix(in srgb, var(--accent) 15%, transparent);
@@ -250,7 +250,7 @@
     width: 100%;
     margin: 4px;
     padding: 7px 9px;
-    background: rgb(0 0 0 / 0.35);
+    background: var(--input-bg);
     border: 1px solid color-mix(in srgb, var(--accent) 50%, transparent);
     border-radius: var(--radius-sm);
     outline: none;
@@ -275,7 +275,7 @@
     font-size: 0.76rem;
   }
   .status:hover {
-    background: rgb(255 255 255 / 0.05);
+    background: var(--hover);
     color: var(--text-muted);
   }
   .status-text {

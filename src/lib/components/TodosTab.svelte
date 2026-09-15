@@ -85,7 +85,7 @@
     padding: 8px 10px;
     border-radius: var(--radius-sm);
     border: 1px solid var(--border);
-    background: rgb(255 255 255 / 0.025);
+    background: var(--surface-2);
     font-size: 0.82rem;
   }
   .todo.completed .content {

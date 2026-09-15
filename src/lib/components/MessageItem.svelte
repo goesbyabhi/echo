@@ -115,7 +115,7 @@
     height: 30px;
     border-radius: 50%;
     border: 1px solid var(--border);
-    background: rgb(255 255 255 / 0.05);
+    background: var(--hover);
     color: var(--text-muted);
     margin-top: 2px;
   }
@@ -165,7 +165,7 @@
     min-width: 0;
   }
   .message.user .content {
-    background: rgb(255 255 255 / 0.045);
+    background: var(--surface-2);
     border: 1px solid var(--border);
     border-radius: var(--radius);
     padding: 10px 12px;

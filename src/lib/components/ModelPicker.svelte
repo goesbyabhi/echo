@@ -101,13 +101,13 @@
     padding: 0 10px;
     border-radius: var(--radius-sm);
     border: 1px solid var(--border);
-    background: rgb(255 255 255 / 0.04);
+    background: var(--surface-2);
     color: var(--text-muted);
     font-size: 0.8rem;
     max-width: 340px;
   }
   .trigger:hover {
-    background: rgb(255 255 255 / 0.08);
+    background: var(--hover-strong);
     color: var(--text);
   }
   .label {
@@ -131,8 +131,7 @@
     right: 0;
     width: 420px;
     max-width: 88vw;
-    background: rgb(var(--surface-2-rgb) / 0.97);
-    backdrop-filter: blur(24px);
+    background: var(--surface-1);
     border: 1px solid var(--border-strong);
     border-radius: var(--radius);
     box-shadow: var(--shadow-lg);
@@ -178,7 +177,7 @@
     color: var(--text-muted);
   }
   .row:hover {
-    background: rgb(255 255 255 / 0.07);
+    background: var(--hover-strong);
     color: var(--text);
   }
   .row.active {

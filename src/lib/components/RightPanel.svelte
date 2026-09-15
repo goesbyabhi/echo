@@ -81,7 +81,7 @@
     color: var(--text-faint);
   }
   .tab:hover {
-    background: rgb(255 255 255 / 0.07);
+    background: var(--hover-strong);
     color: var(--text);
   }
   .tab.active {

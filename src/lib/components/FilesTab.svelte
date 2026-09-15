@@ -126,7 +126,7 @@
     padding: 7px 10px;
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
-    background: rgb(0 0 0 / 0.22);
+    background: var(--input-bg);
     color: var(--text-faint);
   }
   .search input {
@@ -158,7 +158,7 @@
     font-size: 0.72rem;
   }
   .crumb:hover {
-    background: rgb(255 255 255 / 0.07);
+    background: var(--hover-strong);
     color: var(--text);
   }
   .list {
@@ -182,7 +182,7 @@
     min-width: 0;
   }
   .row:hover {
-    background: rgb(255 255 255 / 0.07);
+    background: var(--hover-strong);
     color: var(--text);
   }
   .row.ignored {

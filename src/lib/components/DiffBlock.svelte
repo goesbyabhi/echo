@@ -59,7 +59,7 @@
     border: 1px solid var(--border);
     border-radius: var(--radius);
     overflow: hidden;
-    background: rgb(6 8 18 / 0.5);
+    background: var(--code-bg);
     font-family: var(--mono);
     font-size: 0.78rem;
   }
@@ -69,7 +69,7 @@
     gap: 10px;
     padding: 5px 10px;
     border-bottom: 1px solid var(--border);
-    background: rgb(255 255 255 / 0.03);
+    background: var(--surface-2);
     font-size: 0.75rem;
   }
   .diff-stats .add {
@@ -91,7 +91,7 @@
     padding: 3px 10px;
     color: var(--text-faint);
     font-size: 0.72rem;
-    background: rgb(255 255 255 / 0.035);
+    background: var(--hover);
     position: sticky;
     top: 0;
   }

@@ -266,8 +266,7 @@
     display: grid;
     place-items: center;
     padding: 24px;
-    background: rgb(3 4 10 / 0.6);
-    backdrop-filter: blur(6px);
+    background: rgb(17 17 17 / 0.28);
   }
   .modal {
     width: min(680px, 100%);
@@ -325,7 +324,7 @@
   }
   code {
     font-family: var(--mono);
-    background: rgb(255 255 255 / 0.07);
+    background: var(--hover-strong);
     padding: 1px 5px;
     border-radius: 5px;
   }
@@ -345,12 +344,12 @@
     height: 32px;
     border-radius: var(--radius-sm);
     border: 1px solid var(--border);
-    background: rgb(255 255 255 / 0.04);
+    background: var(--surface-2);
     color: var(--text-muted);
     font-size: 0.8rem;
   }
   .segmented button:hover {
-    background: rgb(255 255 255 / 0.08);
+    background: var(--hover-strong);
     color: var(--text);
   }
   .segmented button.active {
@@ -370,7 +369,7 @@
     padding: 5px 10px;
     border-radius: 999px;
     border: 1px solid var(--border);
-    background: rgb(255 255 255 / 0.04);
+    background: var(--surface-2);
     font-size: 0.78rem;
     color: var(--text-muted);
   }
@@ -383,7 +382,7 @@
     height: 14px;
     border-radius: 50%;
     background: linear-gradient(135deg, var(--p1), var(--p2) 55%, var(--p3));
-    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.15), 0 0 0 2px var(--pa);
+    box-shadow: inset 0 0 0 1px var(--border-strong), 0 0 0 2px var(--pa);
   }
   input[type='range'] {
     width: 100%;

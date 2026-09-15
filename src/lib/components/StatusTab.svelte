@@ -150,7 +150,7 @@
     padding: 10px;
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    background: rgb(255 255 255 / 0.025);
+    background: var(--surface-2);
   }
   .kv {
     display: flex;
@@ -188,7 +188,7 @@
     color: var(--text-muted);
   }
   .row:hover {
-    background: rgb(255 255 255 / 0.04);
+    background: var(--surface-2);
   }
   .row.muted {
     color: var(--text-faint);

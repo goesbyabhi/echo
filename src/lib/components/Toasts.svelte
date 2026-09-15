@@ -45,8 +45,7 @@
     padding: 10px 12px;
     border-radius: var(--radius);
     border: 1px solid var(--border-strong);
-    background: rgb(var(--surface-2-rgb) / 0.96);
-    backdrop-filter: blur(20px);
+    background: var(--surface-1);
     box-shadow: var(--shadow);
     animation: slide-in 0.2s ease;
     font-size: 0.82rem;
