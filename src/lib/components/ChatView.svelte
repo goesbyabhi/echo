@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { untrack } from 'svelte'
   import { chat } from '../stores/chat.svelte'
   import { sessions } from '../stores/sessions.svelte'
   import { status } from '../stores/status.svelte'
@@ -26,9 +27,12 @@
   }
 
   $effect(() => {
-    if (!sessionID) return
-    void chat.load(sessionID)
-    void status.loadTodos(sessionID)
+    const id = sessionID
+    if (!id) return
+    untrack(() => {
+      void chat.load(id)
+      void status.loadTodos(id)
+    })
     pinned = true
     queueMicrotask(() => scrollToBottom())
   })
