@@ -34,7 +34,7 @@
       </div>
     {/if}
 
-    {#each sorted as todo (todo.id)}
+    {#each sorted as todo, index (`${index}-${todo.content}`)}
       <div class="todo {todo.status}">
         <span class="mark">
           {#if todo.status === 'completed'}
