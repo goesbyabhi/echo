@@ -2,11 +2,11 @@
 
 ## Project
 
-Standalone Svelte 5 + Vite SPA that is a **client for a running opencode server**
-(`opencode serve`, HTTP API via `@opencode-ai/sdk`). No backend or server code
-lives in this repo — it talks to an opencode instance at `http://127.0.0.1:4096`
-by default (configurable at runtime in the settings modal). This is not the
-opencode TUI and not the official web app.
+**echo** — a standalone Svelte 5 + Vite SPA that is a **client for a running
+opencode server** (`opencode serve`, HTTP API via `@opencode-ai/sdk`). No backend
+or server code lives in this repo — it talks to an opencode instance at
+`http://127.0.0.1:4096` by default (configurable at runtime in the settings
+modal). This is not the opencode TUI and not the official web app.
 
 ## Commands
 
@@ -51,7 +51,11 @@ the `[data-bg]` rule in `app.css`, and expose it in `SettingsModal.svelte`.
 - SDK calls return `{ data, error }` — check `result.error` instead of relying
   on thrown exceptions (`chat.svelte.ts` is the reference).
 - Settings/state persist to `localStorage` under `opencode-ui:settings`,
-  `opencode-ui:theme`, `opencode-ui:model`, `opencode-ui:agent`. No env vars.
+  `opencode-ui:theme:v7`, `opencode-ui:model`, `opencode-ui:agent`. No env vars.
+  The `opencode-ui:` prefix is **legacy** (pre-rebrand) and must stay — changing
+  it would wipe users' stored wallpaper/theme.
+- Type is Geist, bundled via `@fontsource-variable/geist(-mono)` and imported in
+  `src/main.ts`; the tokens are `--font` / `--mono` in `app.css`.
 - Style: 2-space indent, single quotes, no semicolons.
 - `README.md` is the untouched Vite/Svelte template and does not describe this
   app — trust the code.

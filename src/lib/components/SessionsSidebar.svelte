@@ -5,6 +5,7 @@
   import { sessions } from '../stores/sessions.svelte'
   import { ui } from '../stores/ui.svelte'
   import { relativeTime } from '../format'
+  import BrandMark from './BrandMark.svelte'
   import Icon from './Icon.svelte'
 
   type Row = {
@@ -158,18 +159,20 @@
   </div>
 
   <div class="foot">
-    <span class="avatar" class:offline={connection.status !== 'online'}>oc</span>
+    <span class="avatar" class:offline={connection.status !== 'online'}>
+      <BrandMark size={15} />
+    </span>
     <button class="status" onclick={() => connection.refresh()} title="Reconnect">
       <span class="status-text">
         {connection.status === 'online'
-          ? 'opencode'
+          ? 'connected'
           : connection.status === 'connecting'
             ? 'connecting…'
             : 'offline'}
       </span>
       <span class="status-sub">
         {connection.status === 'online' && connection.version
-          ? `v${connection.version}`
+          ? `opencode v${connection.version}`
           : 'tap to retry'}
       </span>
     </button>
@@ -403,14 +406,11 @@
     height: 26px;
     flex-shrink: 0;
     border-radius: 8px;
-    background: linear-gradient(150deg, #6d5bd0, #b4457a);
-    color: #ffffff;
-    font-size: 0.62rem;
-    font-weight: 700;
-    letter-spacing: 0.02em;
+    background: var(--surface-3);
+    border: 1px solid var(--border);
+    color: var(--text);
   }
   .avatar.offline {
-    background: var(--surface-3);
     color: var(--text-faint);
   }
   .status {

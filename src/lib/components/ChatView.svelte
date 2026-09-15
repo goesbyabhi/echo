@@ -7,6 +7,7 @@
   import Icon from './Icon.svelte'
   import MessageItem from './MessageItem.svelte'
   import Composer from './Composer.svelte'
+  import BrandMark from './BrandMark.svelte'
 
   const sessionID = $derived(sessions.current)
   const entries = $derived(sessionID ? chat.entries(sessionID) : [])
@@ -59,8 +60,8 @@
   {#if !sessionID}
     <div class="welcome">
       <div class="hero">
-        <div class="hero-mark"><Icon name="sparkles" size={20} /></div>
-        <h1>What should we build?</h1>
+        <div class="hero-mark"><BrandMark size={30} /></div>
+        <h1>echo</h1>
         <p>Ask your local opencode server. Use / for commands and @ for files.</p>
         <div class="hero-composer">
           <Composer sessionID="" />
@@ -165,19 +166,14 @@
   .hero-mark {
     display: grid;
     place-items: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 12px;
-    background: rgb(255 255 255 / 0.06);
-    border: 1px solid var(--border);
-    color: var(--text);
-    margin-bottom: 4px;
+    color: var(--text-strong);
+    margin-bottom: 2px;
   }
   .hero h1 {
     margin: 0;
-    font-size: 1.4rem;
+    font-size: 1.5rem;
     font-weight: 600;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.03em;
     color: var(--text-strong);
   }
   .hero p {

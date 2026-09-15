@@ -3,6 +3,7 @@
   import { sessions } from '../stores/sessions.svelte'
   import { status } from '../stores/status.svelte'
   import { ui } from '../stores/ui.svelte'
+  import BrandMark from './BrandMark.svelte'
   import Icon from './Icon.svelte'
 
   const statusChip = $derived.by(() => {
@@ -22,8 +23,8 @@
   </button>
 
   <button class="brand" title="Home" onclick={() => sessions.select('')}>
-    <span class="mark"><Icon name="sparkles" size={15} /></span>
-    <span class="name">opencode</span>
+    <span class="mark"><BrandMark size={16} /></span>
+    <span class="name">echo</span>
   </button>
 
   {#if status.vcs?.branch}
@@ -78,16 +79,13 @@
   .mark {
     display: grid;
     place-items: center;
-    width: 24px;
-    height: 24px;
-    border-radius: 7px;
-    background: rgb(255 255 255 / 0.08);
-    border: 1px solid var(--border);
-    color: var(--text);
+    width: 22px;
+    height: 22px;
+    color: var(--text-strong);
   }
   .name {
-    font-weight: 650;
-    letter-spacing: -0.01em;
+    font-weight: 600;
+    letter-spacing: -0.02em;
     font-size: 0.9rem;
   }
   .spacer {
