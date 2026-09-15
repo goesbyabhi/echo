@@ -35,9 +35,14 @@
 </script>
 
 <aside class="sidebar">
-  <button class="nav-row new" onclick={() => sessions.create()}>
+  <button
+    class="nav-row new"
+    class:active={sessions.current === ''}
+    onclick={() => sessions.select('')}
+    title="New thread"
+  >
     <Icon name="plus" size={15} />
-    <span>New session</span>
+    <span>New thread</span>
   </button>
 
   <div class="search">
@@ -152,6 +157,10 @@
     border: 1px solid var(--border);
   }
   .new:hover {
+    background: rgb(255 255 255 / 0.1);
+    border-color: var(--border-strong);
+  }
+  .new.active {
     background: rgb(255 255 255 / 0.1);
     border-color: var(--border-strong);
   }

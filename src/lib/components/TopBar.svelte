@@ -1,5 +1,6 @@
 <script lang="ts">
   import { connection } from '../stores/connection.svelte'
+  import { sessions } from '../stores/sessions.svelte'
   import { status } from '../stores/status.svelte'
   import { ui } from '../stores/ui.svelte'
   import Icon from './Icon.svelte'
@@ -20,10 +21,10 @@
     <Icon name="panel-left" size={16} />
   </button>
 
-  <div class="brand">
+  <button class="brand" title="Home" onclick={() => sessions.select('')}>
     <span class="mark"><Icon name="sparkles" size={15} /></span>
     <span class="name">opencode</span>
-  </div>
+  </button>
 
   {#if status.vcs?.branch}
     <span class="chip"><Icon name="git-branch" size={12} />{status.vcs.branch}</span>
@@ -63,7 +64,12 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    padding-left: 2px;
+    padding: 4px 6px 4px 2px;
+    border-radius: var(--radius-sm);
+    transition: background 0.16s ease;
+  }
+  .brand:hover {
+    background: var(--hover);
   }
   .mark {
     display: grid;

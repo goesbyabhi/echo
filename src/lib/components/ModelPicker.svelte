@@ -131,10 +131,13 @@
   }
   .popover {
     position: absolute;
-    top: calc(100% + 8px);
+    bottom: calc(100% + 8px);
     right: 0;
     width: 420px;
     max-width: 88vw;
+    max-height: min(56vh, 440px);
+    display: flex;
+    flex-direction: column;
     background: var(--surface-1);
     border: 1px solid var(--border-strong);
     border-radius: var(--radius);
@@ -149,6 +152,7 @@
     padding: 10px 12px;
     border-bottom: 1px solid var(--border);
     color: var(--text-faint);
+    flex-shrink: 0;
   }
   .search input {
     flex: 1;
@@ -158,7 +162,8 @@
     font-size: 0.85rem;
   }
   .scroll {
-    max-height: 380px;
+    flex: 1;
+    min-height: 0;
     overflow: auto;
     padding: 6px;
   }
