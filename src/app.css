@@ -203,10 +203,21 @@ a {
   background: linear-gradient(
     to top,
     #000000 0%,
-    rgb(0 0 0 / 0.82) 18%,
-    rgb(0 0 0 / 0.4) 44%,
-    transparent 74%
+    #000000 26%,
+    rgb(0 0 0 / 0.88) 46%,
+    rgb(0 0 0 / 0.52) 64%,
+    rgb(0 0 0 / 0.18) 80%,
+    transparent 94%
   );
+}
+
+/* While reading a thread, push the artwork far into the background */
+[data-view='chat'] .app-bg::after {
+  background: rgb(0 0 0 / max(var(--bg-dim), 0.9));
+  transition: background 0.4s ease;
+}
+[data-view='chat'] .fx-bloom {
+  opacity: calc(var(--fx-bloom, 0) * 0.35);
 }
 
 .fx-bloom {

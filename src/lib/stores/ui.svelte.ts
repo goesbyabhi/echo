@@ -35,7 +35,7 @@ export type DiffView = {
   after: string
 }
 
-const STORAGE_KEY = 'opencode-ui:theme:v5'
+const STORAGE_KEY = 'opencode-ui:theme:v6'
 const LAYOUT_KEY = 'opencode-ui:layout'
 
 export const defaultTheme: ThemeSettings = {
@@ -48,7 +48,7 @@ export const defaultTheme: ThemeSettings = {
   dim: 0.5,
   accent: '#3b82f6',
   panelOpacity: 0.72,
-  fade: 0.92,
+  fade: 1,
   vignette: 0.35,
   grain: 0.06,
   dither: 0.16,
@@ -78,6 +78,12 @@ const defaultLayout: LayoutSettings = {
   panelTab: 'files',
   panelOpen: true,
   sidebarOpen: true,
+}
+
+let analyzeToken = 0
+
+function toneScrim(luminance: number): number {
+  return Math.max(0, Math.min(1, (luminance - 0.4) / 0.35))
 }
 
 function loadLayout(): LayoutSettings {
@@ -149,6 +155,61 @@ class Ui {
     root.style.setProperty('--fx-bloom', String(this.theme.bloom))
     root.dataset.bg = this.theme.kind
     root.dataset.drift = this.theme.drift ? 'on' : 'off'
+    this.analyzeImage()
+  }
+
+  private analyzeImage(): void {
+    if (typeof document === 'undefined') return
+    const root = document.documentElement
+    const url = this.theme.kind === 'image' ? this.theme.imageUrl : ''
+    if (!url) {
+      root.style.setProperty('--tone-top', '0')
+      root.style.setProperty('--tone-bottom', '0')
+      return
+    }
+    const token = ++analyzeToken
+    const img = new Image()
+    img.crossOrigin = 'anonymous'
+    img.onload = () => {
+      if (token !== analyzeToken) return
+      try {
+        const size = 48
+        const canvas = document.createElement('canvas')
+        canvas.width = size
+        canvas.height = size
+        const ctx = canvas.getContext('2d')
+        if (!ctx) return
+        ctx.drawImage(img, 0, 0, size, size)
+        const { data } = ctx.getImageData(0, 0, size, size)
+        let topSum = 0
+        let topCount = 0
+        let bottomSum = 0
+        let bottomCount = 0
+        for (let y = 0; y < size; y++) {
+          for (let x = 0; x < size; x++) {
+            const i = (y * size + x) * 4
+            const lum = (0.2126 * data[i] + 0.7152 * data[i + 1] + 0.0722 * data[i + 2]) / 255
+            if (y < size / 3) {
+              topSum += lum
+              topCount++
+            } else if (y >= (size * 2) / 3) {
+              bottomSum += lum
+              bottomCount++
+            }
+          }
+        }
+        root.style.setProperty('--tone-top', String(toneScrim(topSum / Math.max(1, topCount))))
+        root.style.setProperty('--tone-bottom', String(toneScrim(bottomSum / Math.max(1, bottomCount))))
+      } catch {
+        root.style.setProperty('--tone-top', '0')
+        root.style.setProperty('--tone-bottom', '0')
+      }
+    }
+    img.onerror = () => {
+      root.style.setProperty('--tone-top', '0')
+      root.style.setProperty('--tone-bottom', '0')
+    }
+    img.src = url
   }
 
   toast(message: string, variant: Toast['variant'] = 'info', title?: string): void {

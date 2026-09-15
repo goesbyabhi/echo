@@ -22,6 +22,21 @@
   })
 
   $effect(() => {
+    const id = sessions.current
+    if (!id || typeof localStorage === 'undefined') return
+    try {
+      localStorage.setItem('opencode-ui:session', id)
+    } catch {
+      /* ignore */
+    }
+  })
+
+  $effect(() => {
+    if (typeof document === 'undefined') return
+    document.documentElement.dataset.view = sessions.current ? 'chat' : 'home'
+  })
+
+  $effect(() => {
     const client = connection.client
     const controller = new AbortController()
     let cancelled = false
@@ -32,6 +47,7 @@
       void startEventStream(client, controller.signal)
       if (!healthy) return
       await Promise.all([models.load(), sessions.refresh(), status.refresh()])
+      sessions.restoreLast()
       if (!cancelled) await sessions.refreshStatuses()
     })()
 
@@ -65,6 +81,9 @@
   {/if}
 
   <main class="main">
+    <div class="tone tone-top"></div>
+    <div class="tone tone-bottom"></div>
+
     <TopBar />
 
     <div class="content">
@@ -72,7 +91,7 @@
         <ChatView />
       </div>
 
-      {#if ui.panelOpen}
+      {#if ui.panelOpen && sessions.current}
         <div class="right-col panel" class:wide={ui.panelTab === 'diff'}>
           <RightPanel />
         </div>
@@ -108,6 +127,32 @@
     min-height: 0;
     display: flex;
     flex-direction: column;
+    position: relative;
+  }
+  .tone {
+    position: absolute;
+    left: 0;
+    right: 0;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .tone-top {
+    top: 0;
+    height: 170px;
+    background: linear-gradient(to bottom, rgb(0 0 0 / 0.75), rgb(0 0 0 / 0.25) 55%, transparent);
+    opacity: var(--tone-top, 0);
+    transition: opacity 0.4s ease;
+  }
+  .tone-bottom {
+    bottom: 0;
+    height: 300px;
+    background: linear-gradient(to top, rgb(0 0 0 / 0.85), rgb(0 0 0 / 0.3) 55%, transparent);
+    opacity: var(--tone-bottom, 0);
+    transition: opacity 0.4s ease;
+  }
+  .content {
+    position: relative;
+    z-index: 2;
   }
   .content {
     flex: 1;

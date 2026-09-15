@@ -39,13 +39,15 @@
     </span>
   </button>
 
-  <button
-    class="ghost"
-    title={ui.panelOpen ? 'Hide panel' : 'Show panel'}
-    onclick={() => (ui.panelOpen = !ui.panelOpen)}
-  >
-    <Icon name="panel-right" size={16} />
-  </button>
+  {#if sessions.current}
+    <button
+      class="ghost"
+      title={ui.panelOpen ? 'Hide panel' : 'Show panel'}
+      onclick={() => (ui.panelOpen = !ui.panelOpen)}
+    >
+      <Icon name="panel-right" size={16} />
+    </button>
+  {/if}
 
   <button class="ghost" title="Settings" onclick={() => (ui.settingsOpen = true)}>
     <Icon name="settings" size={16} />
@@ -59,6 +61,8 @@
     gap: 8px;
     padding: 10px 12px;
     flex-shrink: 0;
+    position: relative;
+    z-index: 2;
   }
   .brand {
     display: flex;

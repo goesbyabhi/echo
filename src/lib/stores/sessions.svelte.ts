@@ -2,6 +2,8 @@ import type { Session, SessionStatus } from '@opencode-ai/sdk/client'
 import { connection } from './connection.svelte'
 import { ui } from './ui.svelte'
 
+const SESSION_KEY = 'opencode-ui:session'
+
 function message(error: unknown): string {
   if (!error) return 'Unknown error'
   if (typeof error === 'string') return error
@@ -14,6 +16,7 @@ class Sessions {
   current = $state('')
   statuses = $state<Record<string, SessionStatus>>({})
   loading = $state(false)
+  private bootstrapped = false
 
   get roots(): Session[] {
     return this.list.filter((session) => !session.parentID)
@@ -41,12 +44,19 @@ class Sessions {
         return
       }
       this.list = (result.data ?? []).sort((a, b) => b.time.updated - a.time.updated)
-      if (!this.current && this.roots.length > 0) this.current = this.roots[0].id
     } catch (error) {
       ui.toast(message(error), 'error', 'Failed to reach server')
     } finally {
       this.loading = false
     }
+  }
+
+  restoreLast(): void {
+    if (this.bootstrapped) return
+    this.bootstrapped = true
+    if (this.current || typeof localStorage === 'undefined') return
+    const id = localStorage.getItem(SESSION_KEY)
+    if (id && this.list.some((session) => session.id === id)) this.current = id
   }
 
   async refreshStatuses(): Promise<void> {
@@ -131,6 +141,13 @@ class Sessions {
 
   select(id: string): void {
     this.current = id
+    if (typeof localStorage === 'undefined') return
+    try {
+      if (id) localStorage.setItem(SESSION_KEY, id)
+      else localStorage.removeItem(SESSION_KEY)
+    } catch {
+      /* ignore */
+    }
   }
 
   upsert(session: Session): void {
