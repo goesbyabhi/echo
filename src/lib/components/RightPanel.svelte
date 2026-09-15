@@ -31,7 +31,7 @@
         title={tab.label}
         onclick={() => (ui.panelTab = tab.id)}
       >
-        <Icon name={tab.icon} size={15} />
+        <Icon name={tab.icon} size={15} weight={ui.panelTab === tab.id ? 'bold' : 'light'} />
         {#if tab.id === 'permissions' && pendingCount > 0}
           <span class="badge">{pendingCount}</span>
         {:else if tab.id === 'diff' && diffReady}

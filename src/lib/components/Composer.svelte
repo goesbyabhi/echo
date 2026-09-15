@@ -263,7 +263,7 @@
     <ModelPicker />
     {#if busy}
       <button class="stop" title="Stop" onclick={() => sessions.abort(sessionID)}>
-        <Icon name="stop" size={12} />
+        <Icon name="stop" size={12} weight="bold" />
       </button>
     {:else}
       <button
@@ -276,7 +276,7 @@
         {#if sending}
           <Icon name="loader" size={14} class="spin" />
         {:else}
-          <Icon name="arrow-up" size={15} />
+          <Icon name="arrow-up" size={15} weight="bold" />
         {/if}
       </button>
     {/if}

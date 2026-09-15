@@ -107,16 +107,17 @@
   let {
     name,
     size = 16,
-    weight = 'regular',
+    weight,
     class: className = '',
   }: { name: string; size?: number; weight?: Weight; class?: string } = $props()
 
   const C = $derived(ICONS[name] ?? ICONS.circle)
+  const resolved = $derived<Weight>(weight ?? (size <= 12 ? 'regular' : 'light'))
 </script>
 
 <span
   class={className}
   style="display:inline-flex;align-items:center;justify-content:center;line-height:0"
 >
-  <C {size} {weight} />
+  <C {size} weight={resolved} />
 </span>
