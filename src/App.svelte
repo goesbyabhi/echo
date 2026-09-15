@@ -147,7 +147,7 @@
       </div>
 
       {#if ui.panelOpen && sessions.current}
-        <div class="right-col panel" data-panel={ui.panelTab}>
+        <div class="right-col">
           <RightPanel />
         </div>
       {/if}
@@ -254,29 +254,16 @@
     display: flex;
   }
   .right-col {
-    width: 380px;
+    width: min(820px, 56vw);
     flex-shrink: 0;
-    margin: 10px 10px 10px 0;
     min-height: 0;
     overflow: hidden;
-  }
-  .right-col[data-panel='files'],
-  .right-col[data-panel='changes'] {
-    width: min(600px, 46vw);
-  }
-  .right-col[data-panel='diff'] {
-    width: min(820px, 56vw);
+    background: rgb(var(--surface-rgb) / var(--panel-opacity));
+    border-left: 1px solid var(--border);
   }
 
   @media (max-width: 1180px) {
     .right-col {
-      width: 340px;
-    }
-    .right-col[data-panel='files'],
-    .right-col[data-panel='changes'] {
-      width: min(500px, 52vw);
-    }
-    .right-col[data-panel='diff'] {
       width: min(620px, 62vw);
     }
   }
@@ -284,12 +271,6 @@
   @media (max-width: 980px) {
     .right-col {
       display: none;
-    }
-    .right-col[data-panel='files'],
-    .right-col[data-panel='changes'],
-    .right-col[data-panel='diff'] {
-      display: block;
-      width: min(540px, 74vw);
     }
   }
 
