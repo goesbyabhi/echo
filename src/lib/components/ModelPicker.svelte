@@ -144,6 +144,7 @@
     box-shadow: var(--shadow-lg);
     z-index: 60;
     overflow: hidden;
+    animation: pop-in 0.16s ease both;
   }
   .search {
     display: flex;

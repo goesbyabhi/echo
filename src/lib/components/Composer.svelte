@@ -414,6 +414,7 @@
     border-radius: var(--radius);
     background: var(--surface-2);
     overflow: hidden;
+    animation: pop-in 0.16s ease both;
   }
   .pop-head {
     padding: 6px 10px 4px;

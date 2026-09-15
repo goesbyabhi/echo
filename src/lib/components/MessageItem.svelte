@@ -106,6 +106,7 @@
     grid-template-columns: 30px 1fr;
     gap: 10px;
     padding: 4px 0;
+    animation: rise-in 0.32s cubic-bezier(0.16, 1, 0.3, 1) both;
   }
   .avatar {
     display: flex;

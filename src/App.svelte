@@ -50,7 +50,12 @@
 </script>
 
 <div class="app-bg"></div>
-<div class="grain"></div>
+<div class="fx fx-bloom"></div>
+<div class="fx fx-dither"></div>
+<div class="fx fx-scanlines"></div>
+<div class="fx fx-grain"></div>
+<div class="fx fx-vignette"></div>
+<div class="fx fx-fade"></div>
 
 <div class="shell">
   {#if ui.sidebarOpen}

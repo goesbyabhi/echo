@@ -2,6 +2,7 @@
   import { permissions } from '../stores/permissions.svelte'
   import { ui, type PanelTab } from '../stores/ui.svelte'
   import ChangesTab from './ChangesTab.svelte'
+  import DiffTab from './DiffTab.svelte'
   import FilesTab from './FilesTab.svelte'
   import Icon from './Icon.svelte'
   import PermissionsTab from './PermissionsTab.svelte'
@@ -9,14 +10,16 @@
   import TodosTab from './TodosTab.svelte'
 
   const tabs: { id: PanelTab; label: string; icon: string }[] = [
+    { id: 'diff', label: 'Diff', icon: 'file-diff' },
     { id: 'files', label: 'Files', icon: 'folder' },
-    { id: 'changes', label: 'Changes', icon: 'file-diff' },
+    { id: 'changes', label: 'Changes', icon: 'git-branch' },
     { id: 'todos', label: 'Todos', icon: 'list' },
     { id: 'status', label: 'Status', icon: 'activity' },
     { id: 'permissions', label: 'Access', icon: 'shield' },
   ]
 
   const pendingCount = $derived(permissions.pending.length)
+  const diffReady = $derived(Boolean(ui.diffView))
 </script>
 
 <aside class="panel-wrap">
@@ -31,6 +34,8 @@
         <Icon name={tab.icon} size={15} />
         {#if tab.id === 'permissions' && pendingCount > 0}
           <span class="badge">{pendingCount}</span>
+        {:else if tab.id === 'diff' && diffReady}
+          <span class="dot"></span>
         {/if}
       </button>
     {/each}
@@ -41,17 +46,21 @@
   </div>
 
   <div class="content">
-    {#if ui.panelTab === 'files'}
-      <FilesTab />
-    {:else if ui.panelTab === 'changes'}
-      <ChangesTab />
-    {:else if ui.panelTab === 'todos'}
-      <TodosTab />
-    {:else if ui.panelTab === 'status'}
-      <StatusTab />
-    {:else}
-      <PermissionsTab />
-    {/if}
+    {#key ui.panelTab}
+      {#if ui.panelTab === 'diff'}
+        <DiffTab />
+      {:else if ui.panelTab === 'files'}
+        <FilesTab />
+      {:else if ui.panelTab === 'changes'}
+        <ChangesTab />
+      {:else if ui.panelTab === 'todos'}
+        <TodosTab />
+      {:else if ui.panelTab === 'status'}
+        <StatusTab />
+      {:else}
+        <PermissionsTab />
+      {/if}
+    {/key}
   </div>
 </aside>
 
@@ -103,6 +112,15 @@
     display: grid;
     place-items: center;
   }
+  .dot {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
   .spacer {
     flex: 1;
   }
@@ -111,5 +129,6 @@
     min-height: 0;
     display: flex;
     flex-direction: column;
+    animation: fade-in 0.2s ease;
   }
 </style>

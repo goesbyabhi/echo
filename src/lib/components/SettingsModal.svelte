@@ -238,6 +238,91 @@
               ui.updateTheme({ panelOpacity: Number((event.currentTarget as HTMLInputElement).value) })}
           />
         </label>
+
+        <div class="subsection">Effects</div>
+
+        <label class="field">
+          <span>Bottom fade — {Math.round(ui.theme.fade * 100)}%</span>
+          <input
+            type="range"
+            min="0"
+            max="1"
+            step="0.02"
+            value={ui.theme.fade}
+            oninput={(event) => ui.updateTheme({ fade: Number((event.currentTarget as HTMLInputElement).value) })}
+          />
+        </label>
+
+        <label class="field">
+          <span>Vignette — {Math.round(ui.theme.vignette * 100)}%</span>
+          <input
+            type="range"
+            min="0"
+            max="1"
+            step="0.02"
+            value={ui.theme.vignette}
+            oninput={(event) =>
+              ui.updateTheme({ vignette: Number((event.currentTarget as HTMLInputElement).value) })}
+          />
+        </label>
+
+        <label class="field">
+          <span>Top bloom — {Math.round(ui.theme.bloom * 100)}%</span>
+          <input
+            type="range"
+            min="0"
+            max="1"
+            step="0.02"
+            value={ui.theme.bloom}
+            oninput={(event) => ui.updateTheme({ bloom: Number((event.currentTarget as HTMLInputElement).value) })}
+          />
+        </label>
+
+        <label class="field">
+          <span>Film grain — {Math.round(ui.theme.grain * 100)}%</span>
+          <input
+            type="range"
+            min="0"
+            max="0.6"
+            step="0.01"
+            value={ui.theme.grain}
+            oninput={(event) => ui.updateTheme({ grain: Number((event.currentTarget as HTMLInputElement).value) })}
+          />
+        </label>
+
+        <label class="field">
+          <span>Dithering — {Math.round(ui.theme.dither * 100)}%</span>
+          <input
+            type="range"
+            min="0"
+            max="1"
+            step="0.02"
+            value={ui.theme.dither}
+            oninput={(event) => ui.updateTheme({ dither: Number((event.currentTarget as HTMLInputElement).value) })}
+          />
+        </label>
+
+        <label class="field">
+          <span>Scanlines — {Math.round(ui.theme.scanline * 100)}%</span>
+          <input
+            type="range"
+            min="0"
+            max="1"
+            step="0.02"
+            value={ui.theme.scanline}
+            oninput={(event) => ui.updateTheme({ scanline: Number((event.currentTarget as HTMLInputElement).value) })}
+          />
+        </label>
+
+        <label class="toggle">
+          <input
+            type="checkbox"
+            checked={ui.theme.drift}
+            onchange={(event) =>
+              ui.updateTheme({ drift: (event.currentTarget as HTMLInputElement).checked })}
+          />
+          <span>Ambient drift</span>
+        </label>
       </section>
     </div>
 
@@ -252,6 +337,25 @@
 </div>
 
 <style>
+  .subsection {
+    margin-top: 6px;
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-faint);
+  }
+  .toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    cursor: pointer;
+  }
+  .toggle input {
+    accent-color: var(--accent);
+  }
   .overlay {
     position: fixed;
     inset: 0;

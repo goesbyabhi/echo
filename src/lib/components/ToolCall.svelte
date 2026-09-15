@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { ToolPart } from '@opencode-ai/sdk/client'
+  import { ui } from '../stores/ui.svelte'
   import Icon from './Icon.svelte'
-  import DiffBlock from './DiffBlock.svelte'
 
   let { part }: { part: ToolPart } = $props()
 
@@ -66,6 +66,14 @@
     }
     return part.tool
   })
+
+  function showDiff(): void {
+    if (isDiff) {
+      ui.openDiff({ title: filePath ?? 'file', before: oldString ?? '', after: newString ?? '' })
+    } else if (isWrite) {
+      ui.openDiff({ title: filePath ?? 'file', before: '', after: content ?? '' })
+    }
+  }
 </script>
 
 <div class="tool" class:errored>
@@ -92,10 +100,15 @@
   </button>
 
   <div class="tool-body">
-    {#if isDiff}
-      <DiffBlock before={oldString ?? ''} after={newString ?? ''} fileName={filePath ?? 'file'} />
-    {:else if isWrite}
-      <pre class="code">{content}</pre>
+    {#if isDiff || isWrite}
+      <button class="diff-row" onclick={showDiff}>
+        <Icon name="file-diff" size={14} />
+        <span class="diff-file">{filePath ?? 'file'}</span>
+        <span class="diff-kind">{isDiff ? 'edited' : 'written'}</span>
+        <span class="spacer"></span>
+        <span class="diff-open">View diff</span>
+        <Icon name="chevron-right" size={13} />
+      </button>
     {/if}
 
     {#if open}
@@ -190,6 +203,41 @@
   }
   .tool-body:empty {
     padding: 0;
+  }
+  .diff-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 7px 10px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--code-bg);
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    text-align: left;
+    transition: background 0.16s ease, border-color 0.16s ease;
+  }
+  .diff-row:hover {
+    background: var(--hover);
+    border-color: var(--border-strong);
+  }
+  .diff-file {
+    font-family: var(--mono);
+    font-size: 0.76rem;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .diff-kind {
+    font-size: 0.7rem;
+    color: var(--text-faint);
+  }
+  .diff-open {
+    font-size: 0.72rem;
+    color: var(--accent);
+    white-space: nowrap;
   }
   .section-label {
     font-size: 0.68rem;
