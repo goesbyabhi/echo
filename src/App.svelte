@@ -1,12 +1,14 @@
 <script lang="ts">
   import { onMount } from 'svelte'
   import ChatView from './lib/components/ChatView.svelte'
+  import Icon from './lib/components/Icon.svelte'
   import RightPanel from './lib/components/RightPanel.svelte'
   import SessionsSidebar from './lib/components/SessionsSidebar.svelte'
   import SettingsModal from './lib/components/SettingsModal.svelte'
   import Toasts from './lib/components/Toasts.svelte'
   import TopBar from './lib/components/TopBar.svelte'
   import { startEventStream } from './lib/events'
+  import { fileToDataUrl } from './lib/image'
   import { connection } from './lib/stores/connection.svelte'
   import { models } from './lib/stores/models.svelte'
   import { sessions } from './lib/stores/sessions.svelte'
@@ -15,6 +17,59 @@
 
   onMount(() => {
     ui.applyTheme()
+  })
+
+  let dragDepth = $state(0)
+  const dragging = $derived(dragDepth > 0)
+
+  function hasFiles(event: DragEvent): boolean {
+    return Boolean(event.dataTransfer?.types.includes('Files'))
+  }
+
+  function onDragEnter(event: DragEvent): void {
+    if (!hasFiles(event)) return
+    event.preventDefault()
+    dragDepth++
+  }
+
+  function onDragOver(event: DragEvent): void {
+    if (!hasFiles(event)) return
+    event.preventDefault()
+    if (event.dataTransfer) event.dataTransfer.dropEffect = 'copy'
+  }
+
+  function onDragLeave(event: DragEvent): void {
+    if (!hasFiles(event)) return
+    dragDepth = Math.max(0, dragDepth - 1)
+  }
+
+  async function onDrop(event: DragEvent): Promise<void> {
+    if (!hasFiles(event)) return
+    event.preventDefault()
+    dragDepth = 0
+    const file = event.dataTransfer?.files?.[0]
+    if (!file) return
+    try {
+      const dataUrl = await fileToDataUrl(file)
+      ui.updateTheme({ kind: 'image', imageUrl: dataUrl })
+      ui.toast('Wallpaper updated', 'success')
+    } catch (error) {
+      ui.toast(error instanceof Error ? error.message : 'Could not load image', 'error')
+    }
+  }
+
+  $effect(() => {
+    if (typeof window === 'undefined') return
+    window.addEventListener('dragenter', onDragEnter)
+    window.addEventListener('dragover', onDragOver)
+    window.addEventListener('dragleave', onDragLeave)
+    window.addEventListener('drop', onDrop)
+    return () => {
+      window.removeEventListener('dragenter', onDragEnter)
+      window.removeEventListener('dragover', onDragOver)
+      window.removeEventListener('dragleave', onDragLeave)
+      window.removeEventListener('drop', onDrop)
+    }
   })
 
   $effect(() => {
@@ -100,6 +155,15 @@
   </main>
 </div>
 
+{#if dragging}
+  <div class="dropzone">
+    <div class="dropzone-card">
+      <Icon name="image" size={22} />
+      <span>Drop an image to set your wallpaper</span>
+    </div>
+  </div>
+{/if}
+
 {#if ui.settingsOpen}
   <SettingsModal />
 {/if}
@@ -153,6 +217,31 @@
   .content {
     position: relative;
     z-index: 2;
+  }
+  .dropzone {
+    position: fixed;
+    inset: 10px;
+    z-index: 200;
+    display: grid;
+    place-items: center;
+    border: 2px dashed color-mix(in srgb, var(--accent) 60%, transparent);
+    border-radius: var(--radius-lg);
+    background: rgb(0 0 0 / 0.55);
+    backdrop-filter: blur(6px);
+    pointer-events: none;
+    animation: fade-in 0.15s ease;
+  }
+  .dropzone-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 20px;
+    border-radius: var(--radius);
+    background: var(--surface-1);
+    border: 1px solid var(--border-strong);
+    color: var(--text);
+    font-size: 0.9rem;
+    box-shadow: var(--shadow-lg);
   }
   .content {
     flex: 1;

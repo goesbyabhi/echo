@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { fileToDataUrl } from '../image'
   import { connection } from '../stores/connection.svelte'
   import { ui, defaultTheme, type BackgroundKind } from '../stores/ui.svelte'
   import Icon from './Icon.svelte'
@@ -8,6 +9,25 @@
   let password = $state(connection.settings.password)
   let directory = $state(connection.settings.directory)
   let testing = $state(false)
+  let importing = $state(false)
+  let fileInput = $state<HTMLInputElement | undefined>()
+
+  async function onChooseFile(event: Event): Promise<void> {
+    const input = event.currentTarget as HTMLInputElement
+    const file = input.files?.[0]
+    input.value = ''
+    if (!file) return
+    importing = true
+    try {
+      const dataUrl = await fileToDataUrl(file)
+      ui.updateTheme({ kind: 'image', imageUrl: dataUrl })
+      ui.toast('Wallpaper updated', 'success')
+    } catch (error) {
+      ui.toast(error instanceof Error ? error.message : 'Could not load image', 'error')
+    } finally {
+      importing = false
+    }
+  }
 
   const kinds: { id: BackgroundKind; label: string }[] = [
     { id: 'aurora', label: 'Aurora' },
@@ -194,6 +214,30 @@
         </div>
 
         {#if ui.theme.kind === 'image'}
+          <div class="wallpaper">
+            <div
+              class="wp-preview"
+              style={ui.theme.imageUrl ? `background-image:url("${ui.theme.imageUrl}")` : ''}
+            ></div>
+            <div class="wp-info">
+              <span class="wp-label">Wallpaper</span>
+              <span class="wp-sub">Local images are embedded in browser storage</span>
+            </div>
+            <span class="spacer"></span>
+            <button class="btn" disabled={importing} onclick={() => fileInput?.click()}>
+              {importing ? 'Importing…' : 'Choose image…'}
+            </button>
+            <button class="btn" onclick={() => ui.updateTheme({ imageUrl: '/wallpaper.svg' })}>
+              Reset
+            </button>
+          </div>
+          <input
+            bind:this={fileInput}
+            class="hidden-file"
+            type="file"
+            accept="image/*"
+            onchange={onChooseFile}
+          />
           <label class="field">
             <span>Image URL</span>
             <input
@@ -355,6 +399,38 @@
   }
   .toggle input {
     accent-color: var(--accent);
+  }
+  .wallpaper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .wp-preview {
+    width: 56px;
+    height: 56px;
+    flex-shrink: 0;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background-color: var(--surface-3);
+    background-size: cover;
+    background-position: center;
+  }
+  .wp-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    min-width: 0;
+  }
+  .wp-label {
+    font-size: 0.85rem;
+    color: var(--text);
+  }
+  .wp-sub {
+    font-size: 0.7rem;
+    color: var(--text-faint);
+  }
+  .hidden-file {
+    display: none;
   }
   .overlay {
     position: fixed;
