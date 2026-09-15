@@ -18,11 +18,11 @@
   ]
 
   const presets: { label: string; color1: string; color2: string; color3: string; accent: string }[] = [
-    { label: 'Midnight', color1: '#0b1026', color2: '#131a3a', color3: '#2a1a4a', accent: '#7c8cff' },
-    { label: 'Sunset', color1: '#1a0b18', color2: '#2d1030', color3: '#4a1a2e', accent: '#ff8f6b' },
-    { label: 'Forest', color1: '#08160f', color2: '#0f2418', color3: '#1a3a26', accent: '#6fd99a' },
-    { label: 'Slate', color1: '#0d1117', color2: '#161b22', color3: '#21262d', accent: '#58a6ff' },
-    { label: 'Mono', color1: '#0a0a0a', color2: '#141414', color3: '#1f1f1f', accent: '#e5e5e5' },
+    { label: 'Graphite', color1: '#0a0a0b', color2: '#101012', color3: '#17171b', accent: '#3b82f6' },
+    { label: 'Slate', color1: '#0b0f14', color2: '#111820', color3: '#1a222c', accent: '#58a6ff' },
+    { label: 'Plum', color1: '#120a16', color2: '#1c1024', color3: '#291636', accent: '#a78bfa' },
+    { label: 'Forest', color1: '#0a120e', color2: '#101c16', color3: '#16281f', accent: '#4ade80' },
+    { label: 'Ember', color1: '#140d0a', color2: '#20130d', color3: '#2e1b12', accent: '#f59e0b' },
   ]
 
   $effect(() => {
