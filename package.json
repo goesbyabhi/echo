@@ -23,6 +23,7 @@
     "diff": "^9.0.0",
     "dompurify": "^3.4.15",
     "highlight.js": "^11.12.0",
-    "marked": "^18.0.13"
+    "marked": "^18.0.13",
+    "phosphor-svelte": "^3.1.0"
   }
 }

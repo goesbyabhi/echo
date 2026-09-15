@@ -1,171 +1,122 @@
 <script lang="ts" module>
-  export const ICONS: Record<string, string[]> = {
-    plus: ['M5 12h14', 'M12 5v14'],
-    send: [
-      'M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z',
-      'M21.854 2.147 10.914 13.086',
-    ],
-    stop: ['M7 7h10v10H7z'],
-    trash: [
-      'M3 6h18',
-      'M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6',
-      'M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2',
-      'M10 11v6',
-      'M14 11v6',
-    ],
-    message: ['M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z'],
-    folder: [
-      'M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z',
-    ],
-    'folder-open': [
-      'M6 14l1.45-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.55 6a2 2 0 0 1-1.94 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.93a2 2 0 0 1 1.66.9l.82 1.2a2 2 0 0 0 1.66.9H18a2 2 0 0 1 2 2v2',
-    ],
-    file: ['M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z', 'M14 2v5h5'],
-    'file-code': [
-      'M10 12.5 8 15l2 2.5',
-      'M14 12.5 16 15l-2 2.5',
-      'M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z',
-      'M14 2v5h5',
-    ],
-    'file-text': [
-      'M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z',
-      'M14 2v5h5',
-      'M16 13H8',
-      'M16 17H8',
-      'M10 9H8',
-    ],
-    'file-diff': [
-      'M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z',
-      'M14 2v5h5',
-      'M9 12h6',
-      'M9 16h3',
-    ],
-    settings: [
-      'M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z',
-      'M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z',
-    ],
-    palette: [
-      'M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8z',
-      'M13.5 6.5a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z',
-      'M17.5 10.5a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z',
-      'M6.5 12.5a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z',
-      'M8.5 7.5a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z',
-    ],
-    refresh: [
-      'M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8',
-      'M21 3v5h-5',
-      'M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16',
-      'M3 21v-5h5',
-    ],
-    pencil: ['M12 20h9', 'M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z'],
-    paperclip: [
-      'M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48',
-    ],
-    slash: ['M17 3 7 21'],
-    'at-sign': ['M12 12a4 4 0 1 0 0-.01', 'M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8'],
-    'arrow-up': ['M12 19V5', 'M5 12l7-7 7 7'],
-    search: ['M21 21l-5.197-5.197', 'M10.5 3a7.5 7.5 0 1 0 0 15 7.5 7.5 0 0 0 0-15z'],
-    'chevron-right': ['M9 18l6-6-6-6'],
-    'chevron-down': ['M6 9l6 6 6-6'],
-    x: ['M18 6 6 18', 'M6 6l12 12'],
-    check: ['M20 6 9 17l-5-5'],
-    'alert-triangle': [
-      'M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z',
-      'M12 9v4',
-      'M12 17h.01',
-    ],
-    info: ['M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z', 'M12 16v-4', 'M12 8h.01'],
-    circle: ['M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z'],
-    terminal: ['M4 17l6-6-6-6', 'M12 19h8'],
-    'git-branch': ['M6 3v12', 'M18 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6z', 'M6 21a3 3 0 1 0 0-6 3 3 0 0 0 0 6z', 'M18 9a9 9 0 0 1-9 9'],
-    server: [
-      'M5 3h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z',
-      'M5 13h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2z',
-      'M7 7h.01',
-      'M7 17h.01',
-    ],
-    plug: ['M12 22v-5', 'M9 8V2', 'M15 8V2', 'M18 8v3a6 6 0 0 1-12 0V8z'],
-    sparkles: [
-      'M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z',
-      'M20 3v4',
-      'M22 5h-4',
-      'M4 17v2',
-      'M5 18H3',
-    ],
-    brain: [
-      'M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z',
-      'M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z',
-    ],
-    image: ['M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z', 'M9 11a2 2 0 1 0 0-4 2 2 0 0 0 0 4z', 'M21 15l-5-5L5 21'],
-    list: ['M3 6h.01', 'M3 12h.01', 'M3 18h.01', 'M8 6h13', 'M8 12h13', 'M8 18h13'],
-    shield: ['M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'],
-    external: ['M15 3h6v6', 'M10 14 21 3', 'M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6'],
-    'panel-right': ['M3 5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z', 'M15 3v18'],
-    'panel-left': ['M3 5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z', 'M9 3v18'],
-    copy: [
-      'M20 9h-9a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2z',
-      'M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1',
-    ],
-    undo: ['M9 14 4 9l5-5', 'M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5 5.5 5.5 0 0 1-5.5 5.5H11'],
-    'arrow-left': ['M19 12H5', 'M12 19l-7-7 7-7'],
-    zap: [
-      'M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z',
-    ],
-    activity: ['M22 12h-4l-3 9L9 3l-3 9H2'],
-    cpu: [
-      'M4 4h16v16H4z',
-      'M9 9h6v6H9z',
-      'M9 1v3',
-      'M15 1v3',
-      'M9 20v3',
-      'M15 20v3',
-      'M20 9h3',
-      'M20 14h3',
-      'M1 9h3',
-      'M1 14h3',
-    ],
-    database: [
-      'M12 8c4.97 0 9-1.34 9-3s-4.03-3-9-3-9 1.34-9 3 4.03 3 9 3z',
-      'M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5',
-      'M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3',
-    ],
-    loader: [
-      'M12 2v4',
-      'M12 18v4',
-      'M4.93 4.93l2.83 2.83',
-      'M16.24 16.24l2.83 2.83',
-      'M2 12h4',
-      'M18 12h4',
-      'M4.93 19.07l2.83-2.83',
-      'M16.24 7.76l2.83-2.83',
-    ],
+  import type { Component } from 'svelte'
+  import {
+    Plus,
+    PaperPlaneTilt,
+    Stop,
+    Trash,
+    ChatCircle,
+    FolderSimple,
+    FolderOpen,
+    File,
+    FileCode,
+    FileText,
+    GitDiff,
+    Gear,
+    Palette,
+    ArrowsClockwise,
+    PencilSimple,
+    Paperclip,
+    Command,
+    At,
+    ArrowUp,
+    MagnifyingGlass,
+    CaretRight,
+    CaretDown,
+    X,
+    Check,
+    Warning,
+    Info,
+    Circle,
+    Terminal,
+    GitBranch,
+    HardDrives,
+    Plug,
+    Sparkle,
+    Brain,
+    Image,
+    List,
+    ShieldCheck,
+    ArrowSquareOut,
+    SidebarSimple,
+    Sidebar,
+    Copy,
+    ArrowUUpLeft,
+    ArrowLeft,
+    Lightning,
+    Pulse,
+    Cpu,
+    Database,
+    CircleNotch,
+  } from 'phosphor-svelte'
+
+  export const ICONS: Record<string, Component<any>> = {
+    plus: Plus,
+    send: PaperPlaneTilt,
+    stop: Stop,
+    trash: Trash,
+    message: ChatCircle,
+    folder: FolderSimple,
+    'folder-open': FolderOpen,
+    file: File,
+    'file-code': FileCode,
+    'file-text': FileText,
+    'file-diff': GitDiff,
+    settings: Gear,
+    palette: Palette,
+    refresh: ArrowsClockwise,
+    pencil: PencilSimple,
+    paperclip: Paperclip,
+    slash: Command,
+    'at-sign': At,
+    'arrow-up': ArrowUp,
+    search: MagnifyingGlass,
+    'chevron-right': CaretRight,
+    'chevron-down': CaretDown,
+    x: X,
+    check: Check,
+    'alert-triangle': Warning,
+    info: Info,
+    circle: Circle,
+    terminal: Terminal,
+    'git-branch': GitBranch,
+    server: HardDrives,
+    plug: Plug,
+    sparkles: Sparkle,
+    brain: Brain,
+    image: Image,
+    list: List,
+    shield: ShieldCheck,
+    external: ArrowSquareOut,
+    'panel-right': SidebarSimple,
+    'panel-left': Sidebar,
+    copy: Copy,
+    undo: ArrowUUpLeft,
+    'arrow-left': ArrowLeft,
+    zap: Lightning,
+    activity: Pulse,
+    cpu: Cpu,
+    database: Database,
+    loader: CircleNotch,
   }
 </script>
 
 <script lang="ts">
+  type Weight = 'thin' | 'light' | 'regular' | 'bold' | 'fill' | 'duotone'
+
   let {
     name,
     size = 16,
-    stroke = 1.75,
+    weight = 'regular',
     class: className = '',
-  }: { name: string; size?: number; stroke?: number; class?: string } = $props()
+  }: { name: string; size?: number; weight?: Weight; class?: string } = $props()
 
-  const paths = $derived(ICONS[name] ?? ICONS.circle)
+  const C = $derived(ICONS[name] ?? ICONS.circle)
 </script>
 
-<svg
+<span
   class={className}
-  width={size}
-  height={size}
-  viewBox="0 0 24 24"
-  fill="none"
-  stroke="currentColor"
-  stroke-width={stroke}
-  stroke-linecap="round"
-  stroke-linejoin="round"
-  aria-hidden="true"
+  style="display:inline-flex;align-items:center;justify-content:center;line-height:0"
 >
-  {#each paths as d}
-    <path {d} />
-  {/each}
-</svg>
+  <C {size} {weight} />
+</span>
