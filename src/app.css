@@ -220,6 +220,13 @@ a {
   opacity: calc(var(--fx-bloom, 0) * 0.35);
 }
 
+/* Chat is a reading surface: freeze the artwork so scrolling stays cheap */
+[data-view='chat'][data-drift='on'][data-bg='image'] .app-bg,
+[data-view='chat'][data-drift='on'][data-bg='mesh'] .app-bg,
+[data-view='chat'][data-drift='on'][data-bg='aurora'] .app-bg {
+  animation: none;
+}
+
 .fx-bloom {
   opacity: var(--fx-bloom, 0);
   background:
@@ -251,6 +258,16 @@ a {
     rgb(255 255 255 / 0.12) 0 1px,
     transparent 1px 3px
   );
+}
+
+/* Rich compositing on the home screen; plain alpha in chat for smooth scrolling */
+[data-view='home'] .fx-grain,
+[data-view='home'] .fx-dither,
+[data-view='home'] .fx-scanlines {
+  mix-blend-mode: overlay;
+}
+[data-view='home'] .fx-bloom {
+  mix-blend-mode: screen;
 }
 
 [data-drift='on'][data-bg='image'] .app-bg {
