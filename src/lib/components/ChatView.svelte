@@ -69,26 +69,28 @@
     </div>
   {:else}
     <header class="chat-head">
-      <div class="title">{sessions.currentSession?.title ?? 'Untitled session'}</div>
-      <div class="chips">
-        {#if busy}
-          <span class="chip warn"><span class="pulse-dot busy"></span> working</span>
-        {:else}
-          <span class="chip ok"><span class="pulse-dot"></span> idle</span>
-        {/if}
-        {#if sessions.currentSession?.summary}
-          <span class="chip">{sessions.currentSession.summary.files} files</span>
-          <span class="chip">+{sessions.currentSession.summary.additions}</span>
-          <span class="chip">-{sessions.currentSession.summary.deletions}</span>
-        {/if}
+      <div class="head-inner">
+        <div class="title">{sessions.currentSession?.title ?? 'Untitled session'}</div>
+        <div class="chips">
+          {#if busy}
+            <span class="chip warn"><span class="pulse-dot busy"></span> working</span>
+          {:else}
+            <span class="chip ok"><span class="pulse-dot"></span> idle</span>
+          {/if}
+          {#if sessions.currentSession?.summary}
+            <span class="chip">{sessions.currentSession.summary.files} files</span>
+            <span class="chip">+{sessions.currentSession.summary.additions}</span>
+            <span class="chip">-{sessions.currentSession.summary.deletions}</span>
+          {/if}
+        </div>
+        <span class="spacer"></span>
+        <button class="ghost" title="Reload messages" onclick={() => sessionID && chat.reload(sessionID)}>
+          <Icon name="refresh" size={15} />
+        </button>
+        <button class="ghost" title="Share session" onclick={share}>
+          <Icon name="external" size={15} />
+        </button>
       </div>
-      <span class="spacer"></span>
-      <button class="ghost" title="Reload messages" onclick={() => sessionID && chat.reload(sessionID)}>
-        <Icon name="refresh" size={15} />
-      </button>
-      <button class="ghost" title="Share session" onclick={share}>
-        <Icon name="external" size={15} />
-      </button>
     </header>
 
     <div class="scroller" bind:this={scroller} onscroll={onScroll}>
@@ -116,7 +118,9 @@
     {/if}
 
     <div class="composer-wrap">
-      <Composer {sessionID} />
+      <div class="composer-inner">
+        <Composer {sessionID} />
+      </div>
     </div>
   {/if}
 </section>
@@ -125,6 +129,8 @@
   .chat {
     display: flex;
     flex-direction: column;
+    flex: 1;
+    width: 100%;
     min-width: 0;
     min-height: 0;
     position: relative;
@@ -137,7 +143,7 @@
   }
   .hero {
     width: 100%;
-    max-width: 720px;
+    max-width: 768px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -172,10 +178,15 @@
     width: 100%;
   }
   .chat-head {
+    padding: 10px 18px;
+  }
+  .head-inner {
+    width: 100%;
+    max-width: 768px;
+    margin: 0 auto;
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 12px 18px;
   }
   .title {
     font-weight: 600;
@@ -201,7 +212,7 @@
     scroll-behavior: auto;
   }
   .thread {
-    max-width: 720px;
+    max-width: 768px;
     margin: 0 auto;
     padding: 16px 20px 26px;
     display: flex;
@@ -209,10 +220,12 @@
     gap: 14px;
   }
   .composer-wrap {
+    width: 100%;
     padding: 0 18px 18px;
   }
-  .composer-wrap :global(.composer) {
-    max-width: 720px;
+  .composer-inner {
+    width: 100%;
+    max-width: 768px;
     margin: 0 auto;
   }
   .jump {

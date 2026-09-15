@@ -1,6 +1,6 @@
 <script lang="ts">
   import { connection } from '../stores/connection.svelte'
-  import { ui, type BackgroundKind } from '../stores/ui.svelte'
+  import { ui, defaultTheme, type BackgroundKind } from '../stores/ui.svelte'
   import Icon from './Icon.svelte'
 
   let baseUrl = $state(connection.settings.baseUrl)
@@ -20,7 +20,9 @@
   const presets: { label: string; color1: string; color2: string; color3: string; accent: string }[] = [
     { label: 'Graphite', color1: '#0a0a0b', color2: '#101012', color3: '#17171b', accent: '#3b82f6' },
     { label: 'Slate', color1: '#0b0f14', color2: '#111820', color3: '#1a222c', accent: '#58a6ff' },
+    { label: 'Ice', color1: '#081014', color2: '#0e1c22', color3: '#142a33', accent: '#67e8f9' },
     { label: 'Plum', color1: '#120a16', color2: '#1c1024', color3: '#291636', accent: '#a78bfa' },
+    { label: 'Rose', color1: '#150a10', color2: '#201018', color3: '#2e1822', accent: '#fb7185' },
     { label: 'Forest', color1: '#0a120e', color2: '#101c16', color3: '#16281f', accent: '#4ade80' },
     { label: 'Ember', color1: '#140d0a', color2: '#20130d', color3: '#2e1b12', accent: '#f59e0b' },
   ]
@@ -140,6 +142,7 @@
                 style="--p1:{preset.color1};--p2:{preset.color2};--p3:{preset.color3};--pa:{preset.accent}"
                 onclick={() =>
                   ui.updateTheme({
+                    kind: 'mesh',
                     color1: preset.color1,
                     color2: preset.color2,
                     color3: preset.color3,
@@ -239,17 +242,7 @@
     </div>
 
     <footer>
-      <button class="btn" onclick={() => ui.updateTheme({
-        kind: 'aurora',
-        color1: '#0b1026',
-        color2: '#131a3a',
-        color3: '#2a1a4a',
-        accent: '#7c8cff',
-        blur: 0,
-        dim: 0.35,
-        panelOpacity: 0.72,
-        imageUrl: '',
-      })}>
+      <button class="btn" onclick={() => ui.updateTheme({ ...defaultTheme })}>
         Reset appearance
       </button>
       <span class="spacer"></span>
