@@ -147,7 +147,7 @@
       </div>
 
       {#if ui.panelOpen && sessions.current}
-        <div class="right-col">
+        <div class="right-col panel">
           <RightPanel />
         </div>
       {/if}
@@ -256,10 +256,9 @@
   .right-col {
     width: min(820px, 56vw);
     flex-shrink: 0;
+    margin: 10px 10px 10px 0;
     min-height: 0;
     overflow: hidden;
-    background: rgb(var(--surface-rgb) / var(--panel-opacity));
-    border-left: 1px solid var(--border);
   }
 
   @media (max-width: 1180px) {
