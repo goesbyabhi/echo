@@ -251,7 +251,8 @@
             <input
               type="range"
               min="0"
-              max="40"
+              max="60"
+              step="1"
               value={ui.theme.blur}
               oninput={(event) => ui.updateTheme({ blur: Number((event.currentTarget as HTMLInputElement).value) })}
             />
@@ -263,8 +264,8 @@
           <input
             type="range"
             min="0"
-            max="0.9"
-            step="0.05"
+            max="1"
+            step="0.01"
             value={ui.theme.dim}
             oninput={(event) => ui.updateTheme({ dim: Number((event.currentTarget as HTMLInputElement).value) })}
           />
@@ -274,9 +275,9 @@
           <span>Panel opacity — {Math.round(ui.theme.panelOpacity * 100)}%</span>
           <input
             type="range"
-            min="0.2"
+            min="0"
             max="1"
-            step="0.02"
+            step="0.01"
             value={ui.theme.panelOpacity}
             oninput={(event) =>
               ui.updateTheme({ panelOpacity: Number((event.currentTarget as HTMLInputElement).value) })}
@@ -291,7 +292,7 @@
             type="range"
             min="0"
             max="1"
-            step="0.02"
+            step="0.01"
             value={ui.theme.fade}
             oninput={(event) => ui.updateTheme({ fade: Number((event.currentTarget as HTMLInputElement).value) })}
           />
@@ -303,7 +304,7 @@
             type="range"
             min="0"
             max="1"
-            step="0.02"
+            step="0.01"
             value={ui.theme.vignette}
             oninput={(event) =>
               ui.updateTheme({ vignette: Number((event.currentTarget as HTMLInputElement).value) })}
@@ -316,7 +317,7 @@
             type="range"
             min="0"
             max="1"
-            step="0.02"
+            step="0.01"
             value={ui.theme.bloom}
             oninput={(event) => ui.updateTheme({ bloom: Number((event.currentTarget as HTMLInputElement).value) })}
           />
@@ -327,7 +328,7 @@
           <input
             type="range"
             min="0"
-            max="0.6"
+            max="1"
             step="0.01"
             value={ui.theme.grain}
             oninput={(event) => ui.updateTheme({ grain: Number((event.currentTarget as HTMLInputElement).value) })}
@@ -340,7 +341,7 @@
             type="range"
             min="0"
             max="1"
-            step="0.02"
+            step="0.01"
             value={ui.theme.dither}
             oninput={(event) => ui.updateTheme({ dither: Number((event.currentTarget as HTMLInputElement).value) })}
           />
@@ -352,7 +353,7 @@
             type="range"
             min="0"
             max="1"
-            step="0.02"
+            step="0.01"
             value={ui.theme.scanline}
             oninput={(event) => ui.updateTheme({ scanline: Number((event.currentTarget as HTMLInputElement).value) })}
           />

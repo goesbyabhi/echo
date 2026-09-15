@@ -1,5 +1,7 @@
 <script lang="ts">
   import type { FileDiff } from '@opencode-ai/sdk/client'
+  import { countChanges } from '../diff'
+  import { chat } from '../stores/chat.svelte'
   import { connection } from '../stores/connection.svelte'
   import { errorMessage } from '../stores/models.svelte'
   import { sessions } from '../stores/sessions.svelte'
@@ -9,21 +11,56 @@
 
   const sessionID = $derived(sessions.current)
 
-  let diffs = $state<FileDiff[]>([])
+  let serverDiffs = $state<FileDiff[]>([])
   let loading = $state(false)
   let openPath = $state('')
 
+  function fromConversation(id: string): FileDiff[] {
+    const entries = id ? chat.entries(id) : []
+    const map = new Map<string, FileDiff>()
+    for (const entry of entries) {
+      for (const part of entry.parts) {
+        if (part.type !== 'tool') continue
+        const input = part.state.input as Record<string, unknown> | undefined
+        if (!input) continue
+        const file =
+          typeof input.filePath === 'string'
+            ? input.filePath
+            : typeof input.path === 'string'
+              ? input.path
+              : ''
+        if (!file) continue
+        if (part.tool === 'edit') {
+          const before = typeof input.oldString === 'string' ? input.oldString : ''
+          const after = typeof input.newString === 'string' ? input.newString : ''
+          const counts = countChanges(before, after)
+          map.set(file, { file, before, after, additions: counts.additions, deletions: counts.deletions })
+        } else if (part.tool === 'write') {
+          const after = typeof input.content === 'string' ? input.content : ''
+          const counts = countChanges('', after)
+          map.set(file, { file, before: '', after, additions: counts.additions, deletions: counts.deletions })
+        }
+      }
+    }
+    return [...map.values()].sort((a, b) => a.file.localeCompare(b.file))
+  }
+
+  const conversationDiffs = $derived(sessionID ? fromConversation(sessionID) : [])
+  const usingFallback = $derived(serverDiffs.length === 0 && conversationDiffs.length > 0)
+  const diffs = $derived(serverDiffs.length > 0 ? serverDiffs : conversationDiffs)
+
   async function load(): Promise<void> {
     if (!sessionID) {
-      diffs = []
+      serverDiffs = []
       return
     }
     loading = true
     try {
       const result = await connection.client.session.diff({ path: { id: sessionID } })
       if (result.error) throw result.error
-      diffs = result.data ?? []
+      serverDiffs = result.data ?? []
     } catch (error) {
+      serverDiffs = []
       ui.toast(errorMessage(error), 'error', 'Could not load changes')
     } finally {
       loading = false
@@ -46,6 +83,11 @@
     <span class="chip ok">+{totals.additions}</span>
     <span class="chip err">-{totals.deletions}</span>
     <span class="chip">{diffs.length} files</span>
+    {#if usingFallback}
+      <span class="chip" title="session.diff returned nothing; showing edits from this conversation">
+        conversation
+      </span>
+    {/if}
     <span class="spacer"></span>
     <button class="ghost mini" title="Refresh" onclick={load} disabled={loading}>
       <Icon name="refresh" size={14} class={loading ? 'spin' : ''} />
@@ -64,13 +106,23 @@
 
     {#each diffs as diff (diff.file)}
       <div class="file">
-        <button class="file-head" onclick={() => (openPath = openPath === diff.file ? '' : diff.file)}>
-          <Icon name={openPath === diff.file ? 'chevron-down' : 'chevron-right'} size={14} />
-          <span class="name">{diff.file}</span>
+        <div class="file-head">
+          <button class="file-toggle" onclick={() => (openPath = openPath === diff.file ? '' : diff.file)}>
+            <Icon name={openPath === diff.file ? 'chevron-down' : 'chevron-right'} size={14} />
+            <span class="name" title={diff.file}>{diff.file}</span>
+          </button>
           <span class="spacer"></span>
           <span class="add">+{diff.additions}</span>
           <span class="del">-{diff.deletions}</span>
-        </button>
+          <button
+            class="ghost mini"
+            title="Open in diff panel"
+            onclick={() =>
+              ui.openDiff({ title: diff.file, before: diff.before, after: diff.after })}
+          >
+            <Icon name="external" size={13} />
+          </button>
+        </div>
         {#if openPath === diff.file}
           <div class="file-body">
             <DiffBlock before={diff.before} after={diff.after} fileName={diff.file} />
@@ -111,20 +163,26 @@
     border: 1px solid var(--border);
     border-radius: var(--radius);
     overflow: hidden;
-    background: var(--surface-2);
+    background: rgb(255 255 255 / 0.02);
   }
   .file-head {
     display: flex;
     align-items: center;
     gap: 8px;
-    width: 100%;
-    padding: 8px 10px;
+    padding: 4px 6px 4px 8px;
+  }
+  .file-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    min-width: 0;
+    padding: 4px 0;
     font-size: 0.8rem;
     color: var(--text-muted);
     text-align: left;
   }
-  .file-head:hover {
-    background: var(--hover);
+  .file-toggle:hover {
     color: var(--text);
   }
   .name {

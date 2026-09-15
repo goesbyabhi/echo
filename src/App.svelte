@@ -147,7 +147,7 @@
       </div>
 
       {#if ui.panelOpen && sessions.current}
-        <div class="right-col panel" class:wide={ui.panelTab === 'diff'}>
+        <div class="right-col panel" data-panel={ui.panelTab}>
           <RightPanel />
         </div>
       {/if}
@@ -226,8 +226,7 @@
     place-items: center;
     border: 2px dashed color-mix(in srgb, var(--accent) 60%, transparent);
     border-radius: var(--radius-lg);
-    background: rgb(0 0 0 / 0.55);
-    backdrop-filter: blur(6px);
+    background: rgb(0 0 0 / 0.62);
     pointer-events: none;
     animation: fade-in 0.15s ease;
   }
@@ -255,23 +254,30 @@
     display: flex;
   }
   .right-col {
-    width: 360px;
+    width: 380px;
     flex-shrink: 0;
     margin: 10px 10px 10px 0;
     min-height: 0;
     overflow: hidden;
-    transition: width 0.22s cubic-bezier(0.16, 1, 0.3, 1);
   }
-  .right-col.wide {
-    width: min(720px, 52vw);
+  .right-col[data-panel='files'],
+  .right-col[data-panel='changes'] {
+    width: min(600px, 46vw);
+  }
+  .right-col[data-panel='diff'] {
+    width: min(820px, 56vw);
   }
 
   @media (max-width: 1180px) {
     .right-col {
-      width: 320px;
+      width: 340px;
     }
-    .right-col.wide {
-      width: min(560px, 58vw);
+    .right-col[data-panel='files'],
+    .right-col[data-panel='changes'] {
+      width: min(500px, 52vw);
+    }
+    .right-col[data-panel='diff'] {
+      width: min(620px, 62vw);
     }
   }
 
@@ -279,9 +285,11 @@
     .right-col {
       display: none;
     }
-    .right-col.wide {
+    .right-col[data-panel='files'],
+    .right-col[data-panel='changes'],
+    .right-col[data-panel='diff'] {
       display: block;
-      width: min(520px, 72vw);
+      width: min(540px, 74vw);
     }
   }
 

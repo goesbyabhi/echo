@@ -218,6 +218,7 @@
     display: flex;
     flex-direction: column;
     gap: 14px;
+    animation: fade-in 0.2s ease;
   }
   .composer-wrap {
     width: 100%;

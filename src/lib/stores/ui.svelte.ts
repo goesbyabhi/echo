@@ -35,7 +35,7 @@ export type DiffView = {
   after: string
 }
 
-const STORAGE_KEY = 'opencode-ui:theme:v6'
+const STORAGE_KEY = 'opencode-ui:theme:v7'
 const LAYOUT_KEY = 'opencode-ui:layout'
 
 export const defaultTheme: ThemeSettings = {
@@ -49,11 +49,11 @@ export const defaultTheme: ThemeSettings = {
   accent: '#3b82f6',
   panelOpacity: 0.72,
   fade: 1,
-  vignette: 0.35,
-  grain: 0.06,
-  dither: 0.16,
-  scanline: 0.06,
-  bloom: 0.3,
+  vignette: 0.55,
+  grain: 0.14,
+  dither: 0.34,
+  scanline: 0.14,
+  bloom: 0.5,
   drift: true,
 }
 
@@ -144,6 +144,7 @@ class Ui {
     root.style.setProperty('--bg-3', this.theme.color3)
     root.style.setProperty('--bg-image', this.theme.imageUrl ? `url("${this.theme.imageUrl}")` : 'none')
     root.style.setProperty('--bg-blur', `${this.theme.blur}px`)
+    root.style.setProperty('--bg-filter', this.theme.blur > 0 ? `blur(${this.theme.blur}px)` : 'none')
     root.style.setProperty('--bg-dim', String(this.theme.dim))
     root.style.setProperty('--accent', this.theme.accent)
     root.style.setProperty('--panel-opacity', String(this.theme.panelOpacity))

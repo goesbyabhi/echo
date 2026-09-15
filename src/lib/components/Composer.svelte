@@ -289,9 +289,7 @@
     flex-direction: column;
     gap: 10px;
     padding: 12px 14px 10px;
-    background: rgb(var(--surface-rgb) / 0.76);
-    backdrop-filter: blur(20px) saturate(130%);
-    -webkit-backdrop-filter: blur(20px) saturate(130%);
+    background: rgb(var(--surface-rgb) / 0.96);
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-lg);
