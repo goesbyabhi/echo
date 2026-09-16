@@ -14,6 +14,16 @@
   const busy = $derived(Boolean(sessionID) && sessions.status(sessionID)?.type === 'busy')
   const loading = $derived(Boolean(sessionID) && chat.loading[sessionID] === true)
 
+  const PAGE = 40
+  const BATCH = 12
+  let historyLimit = $state(PAGE)
+  let renderCount = $state(0)
+  const mayHaveMore = $derived(entries.length >= historyLimit)
+  const visibleEntries = $derived(
+    entries.length > renderCount ? entries.slice(entries.length - renderCount) : entries,
+  )
+  const renderPending = $derived(entries.length > visibleEntries.length)
+
   let scroller = $state<HTMLDivElement | undefined>()
   let pinned = $state(true)
 
@@ -27,15 +37,47 @@
     pinned = scroller.scrollHeight - scroller.scrollTop - scroller.clientHeight < 140
   }
 
+  function loadOlder(): void {
+    const id = sessionID
+    if (!id) return
+    historyLimit += PAGE * 2
+    void chat.load(id, true, historyLimit)
+  }
+
+  function reload(): void {
+    const id = sessionID
+    if (!id) return
+    void chat.load(id, true, historyLimit)
+  }
+
   $effect(() => {
     const id = sessionID
     if (!id) return
+    historyLimit = PAGE
+    renderCount = 0
     untrack(() => {
-      void chat.load(id)
+      void chat.load(id, false, PAGE)
       void status.loadTodos(id)
     })
     pinned = true
     queueMicrotask(() => scrollToBottom())
+  })
+
+  $effect(() => {
+    const total = entries.length
+    if (total === 0) {
+      renderCount = 0
+      return
+    }
+    if (renderCount === 0 || renderCount > total) renderCount = Math.min(BATCH, total)
+  })
+
+  $effect(() => {
+    if (!renderPending) return
+    const timer = setTimeout(() => {
+      renderCount = Math.min(renderCount + BATCH * 2, entries.length)
+    }, 50)
+    return () => clearTimeout(timer)
   })
 
   $effect(() => {
@@ -46,7 +88,8 @@
     if (pinned) scrollToBottom()
   })
 
-  function share(): void {    if (!sessionID) return
+  function share(): void {
+    if (!sessionID) return
     void sessions.share(sessionID).then((url) => {
       if (url) {
         void navigator.clipboard.writeText(url)
@@ -98,7 +141,7 @@
           {/if}
         </div>
         <span class="spacer"></span>
-        <button class="ghost" title="Reload messages" onclick={() => sessionID && chat.reload(sessionID)}>
+        <button class="ghost" title="Reload messages" onclick={reload}>
           <Icon name="refresh" size={15} />
         </button>
         <button class="ghost" title="Share session" onclick={share}>
@@ -118,9 +161,19 @@
           </div>
         {/if}
 
-        {#each entries as entry (entry.info.id)}
+        {#if mayHaveMore}
+          <button class="load-older" onclick={loadOlder}>
+            <Icon name="arrow-up" size={13} />
+            Load earlier messages
+          </button>
+        {/if}
+
+        {#each visibleEntries as entry (entry.info.id)}
           <MessageItem {entry} {busy} />
         {/each}
+        {#if renderPending}
+          <div class="loading-more"><Icon name="loader" size={14} class="spin" /> Loading…</div>
+        {/if}
       </div>
     </div>
 
@@ -228,6 +281,32 @@
     flex-direction: column;
     gap: 14px;
     animation: fade-in 0.2s ease;
+  }
+  .load-older {
+    align-self: center;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 13px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: rgb(255 255 255 / 0.04);
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    transition: background 0.16s ease, color 0.16s ease;
+  }
+  .load-older:hover {
+    background: var(--hover-strong);
+    color: var(--text);
+  }
+  .loading-more {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px;
+    color: var(--text-faint);
+    font-size: 0.8rem;
   }
   .composer-wrap {
     width: 100%;

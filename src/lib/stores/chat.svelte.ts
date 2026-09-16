@@ -36,12 +36,15 @@ class Chat {
     return list
   }
 
-  async load(sessionID: string, force = false): Promise<void> {
+  async load(sessionID: string, force = false, limit?: number): Promise<void> {
     if (!sessionID) return
     if (!force && this.bySession[sessionID]) return
     this.loading = { ...this.loading, [sessionID]: true }
     try {
-      const result = await connection.client.session.messages({ path: { id: sessionID } })
+      const result = await connection.client.session.messages({
+        path: { id: sessionID },
+        query: limit ? { limit } : undefined,
+      })
       if (result.error) {
         ui.toast(errorMessage(result.error), 'error', 'Could not load messages')
         return

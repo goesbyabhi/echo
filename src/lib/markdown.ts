@@ -40,8 +40,7 @@ export function highlightWithin(root: HTMLElement | null | undefined): void {
   })
 }
 
-export function plainText(text: string | undefined, max = 160): string {
-  if (!text) return ''
+export function plainText(text: string | undefined, max = 160): string {  if (!text) return ''
   const stripped = text
     .replace(/```[\s\S]*?```/g, ' ')
     .replace(/`[^`]*`/g, ' ')
@@ -51,4 +50,36 @@ export function plainText(text: string | undefined, max = 160): string {
     .replace(/\s+/g, ' ')
     .trim()
   return stripped.length > max ? `${stripped.slice(0, max)}…` : stripped
+}
+
+type VisibilityCallback = () => void
+
+const visibilityCallbacks = new WeakMap<Element, VisibilityCallback>()
+let visibilityObserver: IntersectionObserver | null = null
+
+function ensureVisibilityObserver(): IntersectionObserver {
+  if (!visibilityObserver) {
+    visibilityObserver = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue
+          const callback = visibilityCallbacks.get(entry.target)
+          visibilityCallbacks.delete(entry.target)
+          visibilityObserver?.unobserve(entry.target)
+          callback?.()
+        }
+      },
+      { rootMargin: '600px 0px' },
+    )
+  }
+  return visibilityObserver
+}
+
+export function whenVisible(element: Element, callback: VisibilityCallback): () => void {
+  visibilityCallbacks.set(element, callback)
+  ensureVisibilityObserver().observe(element)
+  return () => {
+    visibilityCallbacks.delete(element)
+    visibilityObserver?.unobserve(element)
+  }
 }
