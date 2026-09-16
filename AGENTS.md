@@ -57,6 +57,20 @@ the `[data-bg]` rule in `app.css`, and expose it in `SettingsModal.svelte`.
 - Type is Geist, bundled via `@fontsource-variable/geist(-mono)` and imported in
   `src/main.ts`; the tokens are `--font` / `--mono` in `app.css`.
 - Style: 2-space indent, single quotes, no semicolons.
-- `README.md` is the untouched Vite/Svelte template and does not describe this
-  app — trust the code.
+- `README.md` documents the app for users; this file is the source of truth for
+  how the code is wired.
 - Commit at meaningful checkpoints; `npm run check` is the only gate that can fail.
+
+## Agent skills
+
+### Issue tracker
+
+Issues and specs live as GitHub issues in `goesbyabhi/echo`, managed with the `gh` CLI. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+The five canonical triage roles map to their default label strings (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`). See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: one `CONTEXT.md` and `docs/adr/` at the repo root. See `docs/agents/domain.md`.
