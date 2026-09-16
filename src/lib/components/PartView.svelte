@@ -4,7 +4,7 @@
   import Markdown from './Markdown.svelte'
   import ToolCall from './ToolCall.svelte'
 
-  let { part }: { part: Part } = $props()
+  let { part, streaming = false }: { part: Part; streaming?: boolean } = $props()
 
   let reasoningOpen = $state(false)
 </script>
@@ -13,7 +13,7 @@
   {#if part.synthetic}
     <div class="notice">{part.text}</div>
   {:else}
-    <Markdown text={part.text} />
+    <Markdown text={part.text} {streaming} />
   {/if}
 {:else if part.type === 'reasoning'}
   <div class="reasoning">

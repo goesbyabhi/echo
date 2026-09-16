@@ -335,6 +335,11 @@ a {
   }
 }
 
+/* Parts fade in as they stream into the thread */
+.thread .content > * {
+  animation: fade-in 0.22s ease;
+}
+
 @media (prefers-reduced-motion: reduce) {
   [data-drift='on'][data-bg='image'] .app-bg,
   [data-drift='on'][data-bg='mesh'] .app-bg {
@@ -451,6 +456,29 @@ a {
 .md img {
   max-width: 100%;
   border-radius: var(--radius-sm);
+}
+
+/* Streaming caret at the end of the last block while text is arriving */
+.md.streaming > :last-child::after {
+  content: '';
+  display: inline-block;
+  width: 7px;
+  height: 1.02em;
+  margin-left: 3px;
+  vertical-align: -0.16em;
+  border-radius: 2px;
+  background: var(--accent);
+  animation: caret 1.05s steps(2, start) infinite;
+}
+@keyframes caret {
+  0%,
+  45% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
 }
 
 /* highlight.js palette — muted, cool */
@@ -636,6 +664,28 @@ a {
   color: var(--error);
   border-color: transparent;
   background: var(--error-bg);
+}
+.chip.streaming {
+  position: relative;
+  overflow: hidden;
+}
+.chip.streaming::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    transparent 25%,
+    rgb(255 255 255 / 0.22) 50%,
+    transparent 75%
+  );
+  transform: translateX(-120%);
+  animation: shimmer 1.7s ease-in-out infinite;
+}
+@keyframes shimmer {
+  to {
+    transform: translateX(120%);
+  }
 }
 
 .empty {

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { highlightWithin, renderMarkdown, whenVisible } from '../markdown'
 
-  let { text = '' }: { text?: string } = $props()
+  let { text = '', streaming = false }: { text?: string; streaming?: boolean } = $props()
 
   let element = $state<HTMLDivElement | undefined>()
   let visible = $state(false)
@@ -25,7 +25,7 @@
   })
 </script>
 
-<div class="md" bind:this={element}>
+<div class="md" class:streaming bind:this={element}>
   {#if visible}
     {@html html}
   {:else}

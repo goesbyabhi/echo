@@ -66,8 +66,11 @@
     </header>
 
     <div class="content">
-      {#each visibleParts as part (part.id)}
-        <PartView {part} />
+      {#each visibleParts as part, index (part.id)}
+        <PartView
+          {part}
+          streaming={pending && index === visibleParts.length - 1 && part.type === 'text'}
+        />
       {/each}
 
       {#if pending && !hasContent}

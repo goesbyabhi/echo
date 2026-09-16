@@ -14,15 +14,9 @@
   const busy = $derived(Boolean(sessionID) && sessions.status(sessionID)?.type === 'busy')
   const loading = $derived(Boolean(sessionID) && chat.loading[sessionID] === true)
 
-  const PAGE = 40
-  const BATCH = 12
+  const PAGE = 25
   let historyLimit = $state(PAGE)
-  let renderCount = $state(0)
   const mayHaveMore = $derived(entries.length >= historyLimit)
-  const visibleEntries = $derived(
-    entries.length > renderCount ? entries.slice(entries.length - renderCount) : entries,
-  )
-  const renderPending = $derived(entries.length > visibleEntries.length)
 
   let scroller = $state<HTMLDivElement | undefined>()
   let pinned = $state(true)
@@ -40,7 +34,7 @@
   function loadOlder(): void {
     const id = sessionID
     if (!id) return
-    historyLimit += PAGE * 2
+    historyLimit += PAGE
     void chat.load(id, true, historyLimit)
   }
 
@@ -54,30 +48,12 @@
     const id = sessionID
     if (!id) return
     historyLimit = PAGE
-    renderCount = 0
     untrack(() => {
       void chat.load(id, false, PAGE)
       void status.loadTodos(id)
     })
     pinned = true
     queueMicrotask(() => scrollToBottom())
-  })
-
-  $effect(() => {
-    const total = entries.length
-    if (total === 0) {
-      renderCount = 0
-      return
-    }
-    if (renderCount === 0 || renderCount > total) renderCount = Math.min(BATCH, total)
-  })
-
-  $effect(() => {
-    if (!renderPending) return
-    const timer = setTimeout(() => {
-      renderCount = Math.min(renderCount + BATCH * 2, entries.length)
-    }, 50)
-    return () => clearTimeout(timer)
   })
 
   $effect(() => {
@@ -130,7 +106,7 @@
             <span class="chip" title={parent.title}>sub-agent</span>
           {/if}
           {#if busy}
-            <span class="chip warn"><span class="pulse-dot busy"></span> working</span>
+            <span class="chip warn streaming"><span class="pulse-dot busy"></span> working</span>
           {:else}
             <span class="chip ok"><span class="pulse-dot"></span> idle</span>
           {/if}
@@ -168,12 +144,9 @@
           </button>
         {/if}
 
-        {#each visibleEntries as entry (entry.info.id)}
+        {#each entries as entry (entry.info.id)}
           <MessageItem {entry} {busy} />
         {/each}
-        {#if renderPending}
-          <div class="loading-more"><Icon name="loader" size={14} class="spin" /> Loading…</div>
-        {/if}
       </div>
     </div>
 
@@ -298,15 +271,6 @@
   .load-older:hover {
     background: var(--hover-strong);
     color: var(--text);
-  }
-  .loading-more {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 10px;
-    color: var(--text-faint);
-    font-size: 0.8rem;
   }
   .composer-wrap {
     width: 100%;
