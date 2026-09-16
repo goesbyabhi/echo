@@ -79,8 +79,10 @@
   {#if !sessionID}
     <div class="welcome">
       <div class="hero">
-        <div class="hero-mark"><BrandMark size={30} /></div>
-        <h1>echo</h1>
+        <div class="hero-brand">
+          <BrandMark size={30} />
+          <h1>echo</h1>
+        </div>
         <p>Ask your local opencode server. Use / for commands and @ for files.</p>
         <div class="hero-composer">
           <Composer sessionID="" />
@@ -189,18 +191,19 @@
     align-items: center;
     gap: 12px;
   }
-  .hero-mark {
-    display: grid;
-    place-items: center;
+  .hero-brand {
+    display: flex;
+    align-items: center;
+    gap: 11px;
     color: var(--text-strong);
-    margin-bottom: 2px;
   }
   .hero h1 {
     margin: 0;
-    font-size: 1.5rem;
+    font-size: 1.75rem;
     font-weight: 600;
-    letter-spacing: -0.03em;
+    letter-spacing: -0.035em;
     color: var(--text-strong);
+    line-height: 1;
   }
   .hero p {
     margin: 0 0 6px;
