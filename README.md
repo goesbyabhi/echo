@@ -1,47 +1,134 @@
-# Svelte + TS + Vite
+<div align="center">
 
-This template should help get you started developing with Svelte and TypeScript in Vite.
+<img src="docs/home.png" alt="echo — a client for your opencode server" width="880" />
 
-## Recommended IDE Setup
+# echo
 
-[VS Code](https://code.visualstudio.com/) + [Svelte](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode).
+A fast, focused desktop client for a running [opencode](https://opencode.ai) server.
 
-## Need an official Svelte framework?
+Svelte 5 (runes) · Vite · TypeScript
 
-Check out [SvelteKit](https://github.com/sveltejs/kit#readme), which is also powered by Vite. Deploy anywhere with its serverless-first approach and adapt to various platforms, with out of the box support for TypeScript, SCSS, and Less, and easily-added support for mdsvex, GraphQL, PostCSS, Tailwind CSS, and more.
+</div>
 
-## Technical considerations
+---
 
-**Why use this over SvelteKit?**
+**echo** talks directly to `opencode serve` over its HTTP API and SSE event
+stream. There is no backend, no proxy, and no telemetry — the browser is the
+client, your opencode instance is the server.
 
-- It brings its own routing solution which might not be preferable for some users.
-- It is first and foremost a framework that just happens to use Vite under the hood, not a Vite app.
+This is a personal frontend, not the opencode TUI and not the official web app.
 
-This template contains as little as possible to get started with Vite + TypeScript + Svelte, while taking into account the developer experience with regards to HMR and intellisense. It demonstrates capabilities on par with the other `create-vite` templates and is a good starting point for beginners dipping their toes into a Vite + Svelte project.
+## Features
 
-Should you later need the extended capabilities and extensibility provided by SvelteKit, the template has been structured similarly to SvelteKit so that it is easy to migrate.
+- **Chat** with live streaming responses, tool calls, reasoning blocks, and
+  syntax-highlighted markdown.
+- **`@` file mentions and `/` commands** with full keyboard navigation
+  (Arrow keys, Enter/Tab to accept, Escape to dismiss).
+- **Session tree** — sub-agent sessions nest under their parent, with a back
+  link in the header.
+- **Side panel** — Files, Changes, Diff, Todos, Status, and Access, each in a
+  single docked panel.
+- **Changes as a commit log** — every turn that edits files becomes an entry
+  you can expand into its diff; changes open in a wide, dedicated Diff panel.
+- **Live server status** — MCP servers, LSP, formatters, VCS branch, and
+  sandbox permissions.
+- **Permission prompts** surfaced in the panel with allow/reject actions.
+- **Theming** — wallpaper by URL or **local file** (with drag & drop), an effect
+  stack (bottom fade, dither, film grain, scanlines, vignette, bloom), ambient
+  drift, and a luminance-aware scrim so text stays readable over light artwork.
+- **Resilient** — the event stream reconnects with exponential backoff, and
+  panel layout plus your last session persist across reloads.
+- **Fast on long threads** — messages are paged from the server, markdown is
+  parsed lazily as it enters the viewport, and streaming text gets a caret.
 
-**Why `global.d.ts` instead of `compilerOptions.types` inside `jsconfig.json` or `tsconfig.json`?**
+<p align="center">
+  <img src="docs/app.png" alt="Chat with the commit-log changes panel" width="880" />
+</p>
 
-Setting `compilerOptions.types` shuts out all other types not explicitly listed in the configuration. Using triple-slash references keeps the default TypeScript setting of accepting type information from the entire workspace, while also adding `svelte` and `vite/client` type information.
+## Requirements
 
-**Why include `.vscode/extensions.json`?**
+- **Node.js 20.19+** (or 22.12+) — Vite 8 requires it.
+- A running **opencode server**. Start one with CORS enabled for the dev server:
 
-Other templates indirectly recommend extensions via the README, but this file allows VS Code to prompt the user to install the recommended extension upon opening the project.
+  ```sh
+  opencode serve --port 4096 --cors http://localhost:5173
+  ```
 
-**Why enable `allowJs` in the TS template?**
+## Quick start
 
-While `allowJs: false` would indeed prevent the use of `.js` files in the project, it does not prevent the use of JavaScript syntax in `.svelte` files. In addition, it would force `checkJs: false`, bringing the worst of both worlds: not being able to guarantee the entire codebase is TypeScript, and also having worse typechecking for the existing JavaScript. In addition, there are valid use cases in which a mixed codebase may be relevant.
-
-**Why is HMR not preserving my local component state?**
-
-HMR state preservation comes with a number of gotchas! It has been disabled by default in both `svelte-hmr` and `@sveltejs/vite-plugin-svelte` due to its often surprising behavior. You can read the details [here](https://github.com/rixo/svelte-hmr#svelte-hmr).
-
-If you have state that's important to retain within a component, consider creating an external store which would not be replaced by HMR.
-
-```ts
-// store.ts
-// An extremely simple external store
-import { writable } from 'svelte/store'
-export default writable(0)
+```sh
+npm install
+npm run dev
 ```
+
+Open <http://localhost:5173>. echo probes the server on load and shows a
+connection chip; if it can't reach it, open **Settings** and set the base URL
+(defaults to `http://127.0.0.1:4096`), optional basic-auth credentials, and an
+optional project directory.
+
+For a production build:
+
+```sh
+npm run build     # emits to dist/
+npm run preview   # serves the build locally
+```
+
+## Configuration
+
+Everything is configured at runtime in the settings modal and persisted to
+`localStorage` — there are no environment variables.
+
+| Setting     | Purpose                                             |
+| ----------- | --------------------------------------------------- |
+| Base URL    | Where `opencode serve` is listening                 |
+| Username    | Basic-auth user, if the server is protected         |
+| Password    | Basic-auth password                                 |
+| Directory   | Project directory to scope sessions to (optional)   |
+
+Appearance settings (wallpaper, effects, and colours) live in the same modal.
+Local wallpapers are embedded into browser storage, so pick something you don't
+mind compressing.
+
+## Architecture
+
+```
+src/
+  main.ts                     mounts the app, loads Geist
+  app.css                     design tokens, background + effect layers, primitives
+  App.svelte                  shell, startup, event stream lifecycle, drag & drop wallpaper
+  lib/
+    api.ts                    SDK client factory, basic auth, /global/health probe
+    events.ts                 the single SSE reducer (handleEvent)
+    image.ts                  local wallpaper import (resize + encode)
+    markdown.ts               marked + DOMPurify + highlight.js + lazy visibility
+    diff.ts                   structured diff helpers
+    stores/*.svelte.ts        rune-based singleton stores
+    components/*.svelte       presentational components
+```
+
+- **Stores** are plain classes using `$state`/`$derived`, instantiated once and
+  exported (`connection`, `chat`, `sessions`, `models`, `status`,
+  `permissions`, `files`, `ui`). This is *not* the Svelte 4 store API.
+- **Server events** are handled in one place, `lib/events.ts`, which mutates the
+  stores. Components never parse raw events.
+- **SDK calls** return `{ data, error }`; errors are checked, not thrown.
+
+## Scripts
+
+| Command           | Description                                          |
+| ----------------- | ---------------------------------------------------- |
+| `npm run dev`     | Vite dev server with HMR                             |
+| `npm run build`   | Production build to `dist/`                          |
+| `npm run preview` | Serve the built output                               |
+| `npm run check`   | `svelte-check` + `tsc` — the only verification gate  |
+
+## Notes
+
+- The app is a client for **opencode**; it needs a server to be useful.
+- `localStorage` keys are prefixed `opencode-ui:` for historical reasons. The
+  prefix predates the echo rebrand and is kept on purpose so existing settings
+  keep working.
+
+## License
+
+Released under the [MIT License](LICENSE).
