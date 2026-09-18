@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="base" x1="0" y1="0.2" x2="0.5" y2="1">
+      <stop offset="0%" stop-color="#0b1418"/>
+      <stop offset="60%" stop-color="#080f13"/>
+      <stop offset="100%" stop-color="#060a0d"/>
+    </linearGradient>
+    <radialGradient id="glowA" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#1d4a52" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#1d4a52" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="70"/>
+    </filter>
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+    </filter>
+    <path id="waveA" fill="none" stroke="#ffffff" stroke-width="1" d="M0 26 C 120 0, 240 0, 360 26 S 600 52, 720 26 S 960 0, 1080 26 S 1320 52, 1440 26 S 1680 0, 1800 26 S 2040 52, 2100 0"/>
+    <path id="waveB" fill="none" stroke="#ffffff" stroke-width="1" d="M0 0 C 120 26, 240 26, 360 0 S 600 -26, 720 0 S 960 26, 1080 0 S 1320 -26, 1440 0 S 1680 26, 1800 0 S 2040 -26, 2100 0"/>
+  </defs>
+
+  <rect width="1920" height="1080" fill="url(#base)"/>
+
+  <g filter="url(#soft)">
+    <ellipse cx="1520" cy="140" rx="600" ry="380" fill="url(#glowA)"/>
+    <ellipse cx="200" cy="980" rx="660" ry="360" fill="url(#glowA)" opacity="0.5"/>
+  </g>
+
+  <g>
+    <use href="#waveA" transform="translate(0 90)" stroke-opacity="0.22"/>
+    <use href="#waveB" transform="translate(120 150)" stroke-opacity="0.16"/>
+    <use href="#waveA" transform="translate(-180 210)" stroke-opacity="0.12"/>
+    <use href="#waveB" transform="translate(60 270)" stroke-opacity="0.10"/>
+    <use href="#waveA" transform="translate(-120 330)" stroke-opacity="0.09"/>
+    <use href="#waveB" transform="translate(180 390)" stroke-opacity="0.08"/>
+    <use href="#waveA" transform="translate(-60 450)" stroke-opacity="0.07"/>
+    <use href="#waveB" transform="translate(120 510)" stroke-opacity="0.06"/>
+    <use href="#waveA" transform="translate(-180 570)" stroke-opacity="0.05"/>
+    <use href="#waveB" transform="translate(60 630)" stroke-opacity="0.05"/>
+    <use href="#waveA" transform="translate(-120 690)" stroke-opacity="0.04"/>
+    <use href="#waveB" transform="translate(180 750)" stroke-opacity="0.04"/>
+    <use href="#waveA" transform="translate(-60 810)" stroke-opacity="0.035"/>
+    <use href="#waveB" transform="translate(120 870)" stroke-opacity="0.03"/>
+    <use href="#waveA" transform="translate(-180 930)" stroke-opacity="0.025"/>
+    <use href="#waveB" transform="translate(60 990)" stroke-opacity="0.02"/>
+  </g>
+
+  <circle cx="1560" cy="120" r="6" fill="#9fdedc" opacity="0.9"/>
+  <circle cx="360" cy="980" r="4" fill="#9fdedc" opacity="0.5"/>
+
+  <rect width="1920" height="1080" filter="url(#grain)" opacity="0.04"/>
+  <rect width="1920" height="1080" fill="#000000" opacity="0.18"/>
+</svg>

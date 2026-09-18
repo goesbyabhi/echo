@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="base" x1="0" y1="0" x2="0.7" y2="1">
+      <stop offset="0%" stop-color="#0d0b16"/>
+      <stop offset="55%" stop-color="#0a0912"/>
+      <stop offset="100%" stop-color="#06050b"/>
+    </linearGradient>
+    <radialGradient id="glowA" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#43306b" stop-opacity="0.75"/>
+      <stop offset="100%" stop-color="#43306b" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowB" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#1d3a52" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#1d3a52" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="70"/>
+    </filter>
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+    </filter>
+  </defs>
+
+  <rect width="1920" height="1080" fill="url(#base)"/>
+
+  <g filter="url(#soft)">
+    <ellipse cx="500" cy="320" rx="560" ry="420" fill="url(#glowA)"/>
+    <ellipse cx="1520" cy="940" rx="620" ry="420" fill="url(#glowB)"/>
+  </g>
+
+  <g fill="none" stroke="#ffffff">
+    <circle cx="1400" cy="260" r="120" stroke-opacity="0.30"/>
+    <circle cx="1400" cy="260" r="180" stroke-opacity="0.22"/>
+    <circle cx="1400" cy="260" r="250" stroke-opacity="0.16"/>
+    <circle cx="1400" cy="260" r="330" stroke-opacity="0.11"/>
+    <circle cx="1400" cy="260" r="420" stroke-opacity="0.07"/>
+    <circle cx="1400" cy="260" r="520" stroke-opacity="0.04"/>
+    <circle cx="460" cy="920" r="80" stroke-opacity="0.16"/>
+    <circle cx="460" cy="920" r="140" stroke-opacity="0.10"/>
+    <circle cx="460" cy="920" r="210" stroke-opacity="0.06"/>
+    <circle cx="460" cy="920" r="290" stroke-opacity="0.03"/>
+  </g>
+
+  <circle cx="1400" cy="260" r="250" fill="none" stroke="#cdbfee" stroke-opacity="0.34" stroke-dasharray="3 10"/>
+  <g fill="#e8e2f6">
+    <circle cx="1400" cy="10" r="2.4"/>
+    <circle cx="1544" cy="298" r="2.4"/>
+    <circle cx="1530" cy="110" r="1.8"/>
+    <circle cx="1380" cy="510" r="1.8"/>
+    <circle cx="1190" cy="196" r="1.8"/>
+  </g>
+
+  <rect width="1920" height="1080" filter="url(#grain)" opacity="0.04"/>
+  <rect width="1920" height="1080" fill="#000000" opacity="0.18"/>
+</svg>

@@ -3,6 +3,7 @@
   import { connection } from '../stores/connection.svelte'
   import { ui, defaultTheme, type BackgroundKind } from '../stores/ui.svelte'
   import Icon from './Icon.svelte'
+  import WallpaperPicker from './WallpaperPicker.svelte'
 
   let baseUrl = $state(connection.settings.baseUrl)
   let username = $state(connection.settings.username)
@@ -35,16 +36,6 @@
     { id: 'gradient', label: 'Gradient' },
     { id: 'solid', label: 'Solid' },
     { id: 'image', label: 'Image' },
-  ]
-
-  const presets: { label: string; color1: string; color2: string; color3: string; accent: string }[] = [
-    { label: 'Graphite', color1: '#0a0a0b', color2: '#101012', color3: '#17171b', accent: '#3b82f6' },
-    { label: 'Slate', color1: '#0b0f14', color2: '#111820', color3: '#1a222c', accent: '#58a6ff' },
-    { label: 'Ice', color1: '#081014', color2: '#0e1c22', color3: '#142a33', accent: '#67e8f9' },
-    { label: 'Plum', color1: '#120a16', color2: '#1c1024', color3: '#291636', accent: '#a78bfa' },
-    { label: 'Rose', color1: '#150a10', color2: '#201018', color3: '#2e1822', accent: '#fb7185' },
-    { label: 'Forest', color1: '#0a120e', color2: '#101c16', color3: '#16281f', accent: '#4ade80' },
-    { label: 'Ember', color1: '#140d0a', color2: '#20130d', color3: '#2e1b12', accent: '#f59e0b' },
   ]
 
   $effect(() => {
@@ -154,26 +145,7 @@
 
         <div class="field">
           <span>Presets</span>
-          <div class="presets">
-            {#each presets as preset (preset.label)}
-              <button
-                class="preset"
-                title={preset.label}
-                style="--p1:{preset.color1};--p2:{preset.color2};--p3:{preset.color3};--pa:{preset.accent}"
-                onclick={() =>
-                  ui.updateTheme({
-                    kind: 'mesh',
-                    color1: preset.color1,
-                    color2: preset.color2,
-                    color3: preset.color3,
-                    accent: preset.accent,
-                  })}
-              >
-                <span class="swatch"></span>
-                {preset.label}
-              </button>
-            {/each}
-          </div>
+          <WallpaperPicker />
         </div>
 
         <div class="grid">
@@ -530,33 +502,6 @@
     border-color: color-mix(in srgb, var(--accent) 50%, transparent);
     background: color-mix(in srgb, var(--accent) 16%, transparent);
     color: var(--text);
-  }
-  .presets {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-  .preset {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    padding: 5px 10px;
-    border-radius: 999px;
-    border: 1px solid var(--border);
-    background: var(--surface-2);
-    font-size: 0.78rem;
-    color: var(--text-muted);
-  }
-  .preset:hover {
-    color: var(--text);
-    border-color: var(--border-strong);
-  }
-  .swatch {
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--p1), var(--p2) 55%, var(--p3));
-    box-shadow: inset 0 0 0 1px var(--border-strong), 0 0 0 2px var(--pa);
   }
   input[type='range'] {
     width: 100%;

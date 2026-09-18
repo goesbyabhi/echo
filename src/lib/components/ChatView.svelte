@@ -8,6 +8,7 @@
   import MessageItem from './MessageItem.svelte'
   import Composer from './Composer.svelte'
   import BrandMark from './BrandMark.svelte'
+  import WallpaperPicker from './WallpaperPicker.svelte'
 
   const sessionID = $derived(sessions.current)
   const entries = $derived(sessionID ? chat.entries(sessionID) : [])
@@ -86,6 +87,11 @@
         <p>Ask your local opencode server. Use / for commands and @ for files.</p>
         <div class="hero-composer">
           <Composer sessionID="" />
+        </div>
+        <div class="wallpaper-section">
+          <span class="eyebrow">Wallpaper</span>
+          <WallpaperPicker compact />
+          <span class="hint">or drop an image anywhere on the window</span>
         </div>
       </div>
     </div>
@@ -214,6 +220,24 @@
   }
   .hero-composer {
     width: 100%;
+  }
+  .wallpaper-section {
+    margin-top: 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  .eyebrow {
+    font-size: 0.66rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--text-faint);
+  }
+  .hint {
+    font-size: 0.72rem;
+    color: var(--text-faint);
   }
   .chat-head {
     padding: 10px 18px;

@@ -136,3 +136,30 @@ run noisy; the 4173 warm reload is the stable comparative.
 
 - **Font subsetting**: already lazy via `unicode-range`; no runtime cost.
 - **Shrinking `Icon` further**: the remaining 40 icons are all in active use.
+
+---
+
+## Phase 1.5 — wallpaper feature (welcome + bundled presets)
+
+The wallpaper system is the launch wedge, so the home screen now showcases it:
+
+- **`src/lib/wallpapers.ts`** — 8 curated full-theme presets (Midnight/Orbit/
+  Contour image wallpapers, Ember aurora, Graphite/Slate mesh, Nebula gradient,
+  Obsidian solid), replacing the old color-swatch-only presets.
+- **Two new bundled SVGs** (`public/wallpaper-orbit.svg`, `wallpaper-contour.svg`,
+  ~2.5–3 kB each, pure vector, same dark-geometric family as the existing
+  `wallpaper.svg`).
+- **`WallpaperPicker.svelte`** — reusable gallery whose previews reuse the real
+  `[data-bg]` artwork by nesting `.app-bg` with preset CSS vars, so previews are
+  pixel-accurate to what you get. Active state = match on all patch fields.
+- **Welcome screen** shows the strip below the composer with a drop-hint;
+  **Settings** swaps the old swatches for the same picker. `data-view='home'`
+  effects still apply, so the gallery sits on the full artwork.
+
+Home screen after: 229 DOM nodes (was 188 — the 8 preview cards), 0 long tasks,
+0 lazy chunks; ~9 kB of small SVGs are the only new bytes. No regression:
+domReady 253 ms in-session.
+
+Capture: `wallpaper-section` + modal picker + apply/persist/active — verified in
+Helium with zero console errors; screenshots at
+`…\AppData\Local\Temp\opencode\phase1.5-welcome.png`.
