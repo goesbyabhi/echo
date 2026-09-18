@@ -8,19 +8,12 @@
     "build": "vite build",
     "build:stats": "vite build --mode stats",
     "preview": "vite preview",
-    "check": "svelte-check --tsconfig ./tsconfig.app.json && tsc -p tsconfig.node.json",
-    "sidecar": "node scripts/copy-sidecar.mjs",
-    "tauri": "tauri",
-    "desktop:dev": "tauri dev",
-    "desktop:build": "tauri build",
-    "desktop:preview": "tauri build --no-bundle"
+    "check": "svelte-check --tsconfig ./tsconfig.app.json && tsc -p tsconfig.node.json"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^7.3.0",
-    "@tauri-apps/cli": "^2.11.4",
     "@tsconfig/svelte": "^5.0.8",
     "@types/node": "^24.13.3",
-    "opencode-windows-x64": "1.18.31",
     "rollup-plugin-visualizer": "^7.1.1",
     "svelte": "^5.57.0",
     "svelte-check": "^4.7.6",
