@@ -3,7 +3,7 @@
   import { ui } from '../stores/ui.svelte'
   import Icon from './Icon.svelte'
 
-  let { compact = false }: { compact?: boolean } = $props()
+  let {}: Record<string, never> = $props()
 
   const active = $derived((preset: WallpaperPreset) => matchesPreset(preset, ui.theme))
 
@@ -18,12 +18,11 @@
   }
 </script>
 
-<div class="picker" class:compact>
+<div class="picker">
   {#each wallpapers as preset (preset.id)}
     <button
       class="card"
       class:active={active(preset)}
-      class:compact
       title={preset.name}
       aria-pressed={active(preset)}
       onclick={() => apply(preset)}
@@ -89,13 +88,5 @@
     border-radius: 50%;
     background: var(--accent);
     color: #08111f;
-  }
-  .picker.compact .card {
-    width: 64px;
-    font-size: 0.65rem;
-  }
-  .picker.compact .prev {
-    width: 64px;
-    height: 40px;
   }
 </style>
