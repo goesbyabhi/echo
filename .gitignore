@@ -12,6 +12,8 @@ dist
 dist-ssr
 *.local
 stats.html
+/src-tauri/target
+/src-tauri/binaries
 
 # Exported opencode session transcripts
 session-*.md

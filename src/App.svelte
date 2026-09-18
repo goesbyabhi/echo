@@ -97,7 +97,13 @@
     let cancelled = false
 
     void (async () => {
-      const healthy = await connection.refresh()
+      let healthy = await connection.refresh()
+      if (cancelled) return
+      if (!healthy) {
+        await new Promise((resolve) => setTimeout(resolve, 1200))
+        if (cancelled) return
+        healthy = await connection.refresh()
+      }
       if (cancelled) return
       void startEventStream(client, controller.signal)
       if (!healthy) return
