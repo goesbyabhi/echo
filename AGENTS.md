@@ -3,16 +3,22 @@
 ## Project
 
 **echo** — a standalone Svelte 5 + Vite SPA that is a **client for a running
-opencode server** (`opencode serve`, HTTP API via `@opencode-ai/sdk`). No backend
-or server code lives in this repo — it talks to an opencode instance at
-`http://127.0.0.1:4096` by default (configurable at runtime in the settings
-modal). This is not the opencode TUI and not the official web app.
+opencode server** (`opencode serve`, HTTP API via `@opencode-ai/sdk`). It talks
+to an opencode instance at `http://127.0.0.1:4096` by default (configurable at
+runtime in the settings modal). `npm run serve` hosts the built app and
+auto-starts that opencode server. This is not the opencode TUI and not the
+official web app.
 
 ## Commands
 
 - `npm run dev` — Vite dev server with HMR.
 - `npm run build` — production build to `dist/`.
-- `npm run preview` — serve the built `dist/`.
+- `npm run preview` — serve the built `dist/` (Vite preview).
+- `npm run serve` — zero-dependency Node server: serves `dist/` on
+  `http://localhost:4173` and starts an `opencode serve` on `127.0.0.1:4096` if
+  it is not already running, passing the CORS origin of the site. Graceful on
+  Ctrl+C (kills the opencode it spawned). Flags: `--port`, `--server-port`,
+  `--no-server`; or `PORT` / `OPENCODE_PORT` env vars.
 - `npm run check` — `svelte-check` + `tsc -p tsconfig.node.json`. **The only
   verification step; run it after changes.** There are no tests, no linter, no
   formatter, and no CI.
@@ -21,6 +27,10 @@ modal). This is not the opencode TUI and not the official web app.
 
 - `src/lib/api.ts` — builds the SDK client, basic-auth fetch wrapper, and the
   `/global/health` probe. The client is created from `connection.settings`.
+- `scripts/serve.mjs` — the `npm run serve` host: static `dist/` server with SPA
+  fallback plus opencode orchestration (TCP-probes `127.0.0.1:4096`, spawns
+  `opencode serve` with the site's CORS origin if free, kills only the process
+  it spawned on SIGINT/SIGTERM).
 - `src/lib/stores/*.svelte.ts` — **Svelte 5 rune-based singleton stores**: plain
   classes using `$state`/`$derived`, instantiated once and exported
   (`connection`, `chat`, `sessions`, `models`, `status`, `permissions`,

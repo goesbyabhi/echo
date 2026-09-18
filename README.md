@@ -4,7 +4,7 @@
 
 # echo
 
-A fast, focused desktop client for a running [opencode](https://opencode.ai) server.
+A fast, focused web client for a running [opencode](https://opencode.ai) server.
 
 Svelte 5 (runes) · Vite · TypeScript
 
@@ -14,7 +14,8 @@ Svelte 5 (runes) · Vite · TypeScript
 
 **echo** talks directly to `opencode serve` over its HTTP API and SSE event
 stream. There is no backend, no proxy, and no telemetry — the browser is the
-client, your opencode instance is the server.
+client, your opencode instance is the server. The `serve` command hosts the
+built app and will also start your opencode server for you.
 
 This is a personal frontend, not the opencode TUI and not the official web app.
 
@@ -70,8 +71,13 @@ For a production build:
 
 ```sh
 npm run build     # emits to dist/
-npm run preview   # serves the build locally
+npm run serve     # serves dist/ and starts opencode serve on :4096 if free
 ```
+
+`npm run serve` listens on <http://localhost:4173>, probes `127.0.0.1:4096`,
+starts `opencode serve` with the site's CORS origin when the port is free, and
+kills the server it spawned on Ctrl+C (`--port`, `--server-port`, and
+`--no-server` override; `PORT` / `OPENCODE_PORT` env vars also work).
 
 ## Configuration
 
@@ -119,7 +125,8 @@ src/
 | ----------------- | ---------------------------------------------------- |
 | `npm run dev`     | Vite dev server with HMR                             |
 | `npm run build`   | Production build to `dist/`                          |
-| `npm run preview` | Serve the built output                               |
+| `npm run preview` | Serve the built output (Vite preview)                |
+| `npm run serve`   | Serve `dist/` and manage an `opencode serve` on :4096 |
 | `npm run check`   | `svelte-check` + `tsc` — the only verification gate  |
 
 ## Notes
