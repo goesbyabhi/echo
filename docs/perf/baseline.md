@@ -68,3 +68,71 @@ Figures to beat:
 - **Home never downloads the markdown/highlight/diff chunks.**
 - **Chat view** keeps DOM nodes ≈ current (1507 @ 25 messages) while streaming
   renders raw text (no per-token `marked`/`highlight` main-thread work).
+
+---
+
+## Phase 1 — measured after the lazy-load pass (same day)
+
+### What changed
+
+- **`markdown.ts` is now a lazy loader.** `renderMarkdown`/`highlightWithin`
+  dynamically `import()` `markdown-engine.ts` (marked + dompurify +
+  `highlight.js/core` with 11 registered languages + aliases) behind a cached
+  module promise. `plainText`/`whenVisible` stayed engine-free.
+- **`Markdown.svelte` streams cheaply**: while `streaming`, it renders raw
+  pre-wrapped text; the final `renderMarkdown` runs once the message completes;
+  mid-stream it debounces by 250 ms and discards stale renders. Rendering and
+  highlighting only start once the element scrolls within 600 px.
+- **The six right-panel tabs load on demand** (`#await import()` per tab), which
+  dragged `diff` off the eager graph and out of `index`.
+- **`highlight.js/common` (37 langs) → `core` + 11 langs**, still lazy.
+- Icon map pruned 50 → 40 Phosphor icons; added the previously silent-fallback
+  `code` icon; memory caps (500 msgs/session, 200 orphan-parts) in chat store;
+  `updateTheme` debounces `applyTheme` 60 ms so slider drags don't re-run
+  `analyzeImage` per tick.
+
+### Bundle after (gzip)
+
+| Chunk | raw | gzip | status |
+| --- | --- | --- | --- |
+| `index` | 68.06 kB | 20.84 kB | eager — was 300.16 / 76.92 |
+| `Icon` | 178.17 kB | 44.63 kB | eager, now cacheable independently |
+| `sdk` | 18.54 kB | 5.18 kB | eager |
+| `connection` / `ui` | 6.38 kB | 2.58 kB | eager |
+| `index` CSS | 37.34 kB | 7.88 kB | eager |
+| `fonts` CSS | 3.30 kB | 0.65 kB | eager |
+| `markdown` | 71.11 kB | 23.69 kB | **lazy** (was eager) |
+| `highlight` | 69.76 kB | 23.68 kB | **lazy**, core only (was 154.86 eager) |
+| `diff` + `DiffBlock` | 12.26 kB | 4.79 kB | **lazy** (was eager) |
+| 6 × tab chunks | ~27 kB | ~10.8 kB | **lazy** |
+
+**Initial JS+CSS payload: ~172 kB → ~82 kB gzip.** Fonts untouched: the
+`@fontsource` CSS uses `unicode-range`, so cyrillic/vietnamese woff2s already
+never download for latin text; nothing to trim there.
+
+Home-screen request graph is now exactly:
+
+```
+index                    index…js       21 kB
+Icon (Phosphor map)      Icon-….js      45 kB
+sdk + connection + ui    …js            9 kB
+```
+
+`markdown`, `highlight`, `diff`, and every tab are **not fetched** until a
+message is visible or a panel opens.
+
+### Runtime after (production build, Helium, cold port)
+
+| View | domReady | FCP | DOM nodes | Long tasks | TBT | JS transferred |
+| --- | --- | --- | --- | --- | --- | --- |
+| home | 552 ms | 528 ms | 188 | 0 | 0 ms | 74 kB (was 172) |
+| chat (seeded) | 309 ms | 492 ms | 1710 | 0 | 0 ms | — |
+
+Wins are structural: transfer halved, main-thread jank eliminated (home was
+2 × 327 ms of long tasks; chat was 4 × 380 ms). Paint timings on a cold port
+run noisy; the 4173 warm reload is the stable comparative.
+
+### Deferred (measured, not worth it)
+
+- **Font subsetting**: already lazy via `unicode-range`; no runtime cost.
+- **Shrinking `Icon` further**: the remaining 40 icons are all in active use.

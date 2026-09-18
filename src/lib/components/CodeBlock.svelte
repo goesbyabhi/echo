@@ -12,7 +12,7 @@
 
   $effect(() => {
     void code
-    if (element) highlightWithin(element)
+    if (element) void highlightWithin(element)
   })
 
   async function copy(): Promise<void> {

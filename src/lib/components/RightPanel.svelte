@@ -1,13 +1,7 @@
 <script lang="ts">
   import { permissions } from '../stores/permissions.svelte'
   import { ui, type PanelTab } from '../stores/ui.svelte'
-  import ChangesTab from './ChangesTab.svelte'
-  import DiffTab from './DiffTab.svelte'
-  import FilesTab from './FilesTab.svelte'
   import Icon from './Icon.svelte'
-  import PermissionsTab from './PermissionsTab.svelte'
-  import StatusTab from './StatusTab.svelte'
-  import TodosTab from './TodosTab.svelte'
 
   const tabs: { id: PanelTab; label: string; icon: string }[] = [
     { id: 'diff', label: 'Diff', icon: 'file-diff' },
@@ -48,17 +42,29 @@
   <div class="content">
     {#key ui.panelTab}
       {#if ui.panelTab === 'diff'}
-        <DiffTab />
+        {#await import('./DiffTab.svelte') then { default: Tab }}
+          <Tab />
+        {/await}
       {:else if ui.panelTab === 'files'}
-        <FilesTab />
+        {#await import('./FilesTab.svelte') then { default: Tab }}
+          <Tab />
+        {/await}
       {:else if ui.panelTab === 'changes'}
-        <ChangesTab />
+        {#await import('./ChangesTab.svelte') then { default: Tab }}
+          <Tab />
+        {/await}
       {:else if ui.panelTab === 'todos'}
-        <TodosTab />
+        {#await import('./TodosTab.svelte') then { default: Tab }}
+          <Tab />
+        {/await}
       {:else if ui.panelTab === 'status'}
-        <StatusTab />
+        {#await import('./StatusTab.svelte') then { default: Tab }}
+          <Tab />
+        {/await}
       {:else}
-        <PermissionsTab />
+        {#await import('./PermissionsTab.svelte') then { default: Tab }}
+          <Tab />
+        {/await}
       {/if}
     {/key}
   </div>

@@ -93,6 +93,7 @@ const defaultLayout: LayoutSettings = {
 }
 
 let analyzeToken = 0
+let applyTimer: ReturnType<typeof setTimeout> | null = null
 
 function toneScrim(luminance: number): number {
   return Math.max(0, Math.min(1, (luminance - 0.4) / 0.35))
@@ -138,7 +139,11 @@ class Ui {
 
   updateTheme(patch: Partial<ThemeSettings>): void {
     this.theme = { ...this.theme, ...patch }
-    this.applyTheme()
+    if (applyTimer) clearTimeout(applyTimer)
+    applyTimer = setTimeout(() => {
+      applyTimer = null
+      this.applyTheme()
+    }, 60)
     if (typeof localStorage !== 'undefined') {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...this.theme, v: THEME_VERSION }))

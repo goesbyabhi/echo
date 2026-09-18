@@ -5,7 +5,7 @@
 
   let element = $state<HTMLDivElement | undefined>()
   let visible = $state(false)
-  const html = $derived(visible ? renderMarkdown(text) : '')
+  let html = $state('')
 
   $effect(() => {
     if (visible || !element) return
@@ -19,16 +19,48 @@
   })
 
   $effect(() => {
+    if (!visible || streaming) return
+    const source = text
+    if (!source) {
+      html = ''
+      return
+    }
+    let cancelled = false
+    void renderMarkdown(source).then((rendered) => {
+      if (!cancelled) html = rendered
+    })
+    return () => {
+      cancelled = true
+    }
+  })
+
+  $effect(() => {
+    if (!visible || !streaming) return
+    const source = text
+    if (!source) return
+    let cancelled = false
+    const timer = setTimeout(() => {
+      void renderMarkdown(source).then((rendered) => {
+        if (!cancelled && streaming) html = rendered
+      })
+    }, 250)
+    return () => {
+      cancelled = true
+      clearTimeout(timer)
+    }
+  })
+
+  $effect(() => {
     if (!element || !visible) return
     void html
-    highlightWithin(element)
+    void highlightWithin(element)
   })
 </script>
 
 <div class="md" class:streaming bind:this={element}>
-  {#if visible}
+  {#if html}
     {@html html}
-  {:else}
+  {:else if text}
     <div class="md-raw">{text}</div>
   {/if}
 </div>

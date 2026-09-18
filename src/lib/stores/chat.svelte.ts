@@ -9,6 +9,9 @@ export type MessageEntry = {
   parts: Part[]
 }
 
+const MAX_MESSAGES = 500
+const MAX_ORPHANS = 200
+
 class Chat {
   bySession = $state<Record<string, MessageEntry[]>>({})
   loading = $state<Record<string, boolean>>({})
@@ -75,6 +78,7 @@ class Chat {
     list.push({ info, parts: orphaned ?? [] })
     if (orphaned) this.orphans.delete(info.id)
     list.sort((a, b) => a.info.time.created - b.info.time.created)
+    if (list.length > MAX_MESSAGES) list.splice(0, list.length - MAX_MESSAGES)
   }
 
   upsertPart(part: Part): void {
@@ -86,6 +90,10 @@ class Chat {
       if (index >= 0) bucket[index] = part
       else bucket.push(part)
       this.orphans.set(part.messageID, bucket)
+      if (this.orphans.size > MAX_ORPHANS) {
+        const oldest = this.orphans.keys().next().value
+        if (oldest !== undefined) this.orphans.delete(oldest)
+      }
       return
     }
     const index = entry.parts.findIndex((item) => item.id === part.id)

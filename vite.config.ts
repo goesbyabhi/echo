@@ -1,12 +1,13 @@
 import { svelte } from '@sveltejs/vite-plugin-svelte'
+import type { Plugin } from 'vite'
 import { defineConfig } from 'vite'
 import { visualizer } from 'rollup-plugin-visualizer'
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
-  const plugins = [svelte()]
+  const plugins: Plugin[] = [...svelte()]
   if (mode === 'stats') {
-    plugins.push(visualizer({ emitFile: true, filename: 'stats.html', gzipSize: true, template: 'treemap' }))
+    plugins.push(...(visualizer({ emitFile: true, filename: 'stats.html', gzipSize: true, template: 'treemap' }) as unknown as Plugin[]))
   }
   return {
     plugins,

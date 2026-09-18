@@ -1,45 +1,3 @@
-import DOMPurify from 'dompurify'
-import hljs from 'highlight.js/lib/common'
-import { marked } from 'marked'
-
-marked.setOptions({
-  gfm: true,
-  breaks: true,
-})
-
-let hooksInstalled = false
-
-function installHooks() {
-  if (hooksInstalled) return
-  hooksInstalled = true
-  DOMPurify.addHook('afterSanitizeAttributes', (node) => {
-    if (node.tagName === 'A') {
-      node.setAttribute('target', '_blank')
-      node.setAttribute('rel', 'noopener noreferrer')
-    }
-  })
-}
-
-export function renderMarkdown(text: string): string {
-  if (!text) return ''
-  installHooks()
-  const html = marked.parse(text, { async: false })
-  return DOMPurify.sanitize(html)
-}
-
-export function highlightWithin(root: HTMLElement | null | undefined): void {
-  if (!root) return
-  const blocks = root.querySelectorAll<HTMLElement>('pre code')
-  blocks.forEach((block) => {
-    if (block.dataset.highlighted === 'yes') return
-    try {
-      hljs.highlightElement(block)
-    } catch {
-      block.dataset.highlighted = 'yes'
-    }
-  })
-}
-
 export function plainText(text: string | undefined, max = 160): string {  if (!text) return ''
   const stripped = text
     .replace(/```[\s\S]*?```/g, ' ')
@@ -82,4 +40,25 @@ export function whenVisible(element: Element, callback: VisibilityCallback): () 
     visibilityCallbacks.delete(element)
     visibilityObserver?.unobserve(element)
   }
+}
+
+type Engine = typeof import('./markdown-engine')
+
+let enginePromise: Promise<Engine> | null = null
+
+function loadEngine(): Promise<Engine> {
+  if (!enginePromise) enginePromise = import('./markdown-engine')
+  return enginePromise
+}
+
+export async function renderMarkdown(text: string): Promise<string> {
+  if (!text) return ''
+  const engine = await loadEngine()
+  return engine.renderMarkdown(text)
+}
+
+export async function highlightWithin(root: HTMLElement | null | undefined): Promise<void> {
+  if (!root) return
+  const engine = await loadEngine()
+  engine.highlightWithin(root)
 }
