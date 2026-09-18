@@ -1,7 +1,10 @@
 # echo — resume quantification
 
-Numbers below are **exactly as measured** in a local development session
-(browser at 1912×962, Chrome, `opencode serve` on localhost). See
+Numbers below are **exactly as measured**. The original figures were taken in a
+local development session (browser at 1912×962, Chrome, `opencode serve` on
+localhost). Every figure was **re-measured on 2026-09-18** against the
+production build (`npm run build`, served via the local `serve` server) talking
+to the same API on Chrome with a **144 Hz panel**. See
 [How these were measured](#how-these-were-measured) for the method.
 
 ---
@@ -9,18 +12,22 @@ Numbers below are **exactly as measured** in a local development session
 ## Resume bullets
 
 - Built **echo**, a Svelte 5 (runes) + TypeScript + Vite web client for the
-  opencode server API — **7,023 lines of source across 22 components and 8
+  opencode server API — **7,062 lines of source across 22 components and 8
   rune-based stores** — delivering streaming chat, `@` file mentions,
   `/` slash commands, a session tree for sub-agents, diff review, permission
   prompts, and live MCP/LSP/VCS status.
-- Cut session open-to-first-paint **80.6% (3,095 ms → 601 ms)** on a
-  302-message thread by adding server-side message pagination
-  (**9.16 MB → 2.53 MB** payload), parsing markdown lazily as it enters the
-  viewport, and reducing rendered DOM from **20,890 → 4,033 nodes**.
-- Raised interface smoothness **1.8x** (34.9 → 62.7 fps in a controlled A/B, and
-  **111.3 fps** with the wallpaper frozen during chat) by profiling the render
-  pipeline and removing `backdrop-filter` and `mix-blend-mode` compositing
-  layers; total main-thread blocking fell from **454 ms to 266 ms**.
+- Opens big threads without pulling the whole history: a **740-message /
+  3,353-part session is 16.7 MB raw on the wire**, but the client renders a
+  **569 KB paginated window** (server-side message pagination) — cold boot to
+  first message **1,349 ms**, with **1,471 DOM nodes** and **456 ms of long
+  tasks** `[72, 124, 63, 197]` across the open. Before pagination, the same
+  flow opened a 302-message thread in **3,095 ms** from a **20,890-node**
+  DOM tree.
+- Sustains native refresh-rate UI on a 144 Hz panel: **135.6–141.6 fps** under
+  the animated aurora background (0–1 dropped frames per 2.5 s sample) and
+  **142.4 fps** with a static wallpaper. The original A/B measured a controlled
+  **34.9 → 62.7 fps** after removing `backdrop-filter` and `mix-blend-mode`
+  compositing layers from the render pipeline.
 - Made the client resilient and personalized: SSE auto-reconnect with
   exponential backoff, layout/session persistence, local wallpaper import with
   drag & drop, a GPU-friendly effect stack (dither, grain, scanlines, vignette,
@@ -37,33 +44,36 @@ Numbers below are **exactly as measured** in a local development session
 
 | Metric | Value |
 | --- | --- |
-| Total source lines | 7,023 |
-| — Svelte components | 4,842 |
-| — Store TypeScript (`*.svelte.ts`) | 983 |
-| — CSS | 731 |
-| — TypeScript | 467 |
+| Total source lines | 7,062 |
+| — Svelte components | 4,865 |
+| — Store TypeScript (`*.svelte.ts`) | 991 |
+| — CSS | 732 |
+| — TypeScript | 474 |
 | Components | 22 |
 | Stores | 8 |
 | Source files | 39 |
-| Commits | 29 |
+| Commits | 30 |
 | Authors | 1 |
 
 ### Performance
 
-| Metric | Before | After |
-| --- | --- | --- |
-| Session open → first paint | 3,095 ms | 601 ms |
-| Thread DOM nodes | 20,890 | 4,033 |
-| Message payload | 9.16 MB | 2.53 MB |
-| Message fetch time | 582 ms | 177 ms |
-| Main-thread long tasks | 454 ms `[192, 50, 212]` | 266 ms `[145, 121]` |
-| Frame rate (controlled A/B) | 34.9 fps | 62.7 fps |
+Re-measured 2026-09-18 in Chrome (144 Hz panel) against the **built** app and
+`ses_f58f529c…` — a **740-message / 3,353-part thread (16.7 MB raw)**.
 
-Additional measurement: **111.3 fps** in chat once the wallpaper animation is
-frozen (`data-view="chat"`), versus 34.9 fps with `backdrop-filter` and
-`mix-blend-mode` layers active.
+| Metric | Value |
+| --- | --- |
+| Cold boot → first message rendered | 1,349 ms |
+| Thread DOM nodes after open | 1,471 (window of 25 messages) |
+| Message window payload / fetch time | 569 KB in 464 ms (`?limit=50`) |
+| Full thread on the wire | 16.7 MB in ~2.6 s (never fetched by the client) |
+| Main-thread long tasks (boot + open) | 456 ms `[72, 124, 63, 197]` |
+| SSE connect → first event chunk | 161 ms |
+| Frame rate — animated aurora | 135.6–141.6 fps, 0–1 dropped / 2.5 s |
+| Frame rate — static wallpaper | 142.4 fps (display cap), 0 dropped |
+| Frame rate — wallpaper frozen (idle view) | 94.7 fps, 0 dropped (idle rAF cadence) |
 
-Thread size at measurement: **302 messages / 1,441 parts**.
+Without pagination the 16.7 MB thread would be fetched in full; the windowed
+approach keeps every open at ~0.6 MB of payload.
 
 ### Build
 
@@ -84,16 +94,25 @@ Thread size at measurement: **302 messages / 1,441 parts**.
 
 ## How these were measured
 
-- **Session open → first paint** — `performance.now()` in the page immediately
-  before the session click, resolved when the first message node entered the
-  DOM. Repeated across cached and uncached switches.
-- **DOM nodes / payload / fetch time** — `document.querySelectorAll` counts and
-  timed `fetch` of `/session/{id}/message`, with and without `?limit=50`.
-- **Long tasks** — `PerformanceObserver({ entryTypes: ['longtask'] })` during a
-  session switch; values are the individual task durations in milliseconds.
-- **Frame rate** — `requestAnimationFrame` delta sampling over a 90–180 frame
-  window; the A/B was measured back-to-back in one run to remove machine-load
-  variance.
+- **Cold boot → first message** — instrumentation hooks installed via
+  `addInitScript` so they ran before any app module: a
+  `PerformanceObserver({ type: 'longtask' })` for main-thread blocking, and a
+  `MutationObserver` that recorded the monotonic `performance.now()` stamp when
+  the first `article.message` node entered the DOM. The measured sequence was a
+  full page load with the target session restored from `opencode-ui:session`;
+  the reported time is the stamp itself (since time origin).
+- **DOM nodes / payload / fetch time** — `document.querySelectorAll('*')`
+  counts after the open, and timed `fetch` of `/session/{id}/message` with and
+  without `?limit=50`. Full-thread size is the actual HTTP response length
+  (16,680,215 bytes for 740 messages / 3,353 parts, fetched from the API
+  directly).
+- **Long tasks** — `PerformanceObserver({ entryTypes: ['longtask'] })` over the
+  boot → first-message window; values are individual task durations in
+  milliseconds.
+- **Frame rate** — `requestAnimationFrame` delta sampling over a 2.5 s window
+  (~350 frames); A/B ran back-to-back in one run, toggling `data-drift` on
+  `<html>` and switching `data-bg` between `aurora` and `image`. A dropped
+  frame counts as an inter-frame gap above 25 ms.
 - **Bundle size** — Vite production build output (`npm run build`).
 - **Type safety** — `npm run check` (`svelte-check --tsconfig ./tsconfig.app.json
   && tsc -p tsconfig.node.json`).
